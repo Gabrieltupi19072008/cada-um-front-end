@@ -1,0 +1,91 @@
+:root {
+  --fundo: #faf7f2;
+  --fundo-2: #f2ede3;
+  --cartao: #ffffff;
+  --texto: #6b6459;
+  --texto-suave: #8a8378;
+  --titulo: #3a3630;
+  --borda-sutil: #ece5d8;
+  --sombra:
+    0 1px 2px rgba(58, 54, 48, 0.06), 0 8px 24px rgba(58, 54, 48, 0.08);
+
+  /* Cor de destaque padrão (área do candidato). Empresa/Admin sobrescrevem via
+     .tema-empresa / .tema-admin mais abaixo. */
+  --acento: #9b8ce0;
+  --acento-escuro: #7c6cc4;
+  --acento-claro: rgba(155, 140, 224, 0.12);
+
+  --sucesso: #6dbe45;
+  --sucesso-claro: rgba(109, 190, 69, 0.14);
+  --alerta: #e0a63a;
+  --alerta-claro: rgba(224, 166, 58, 0.14);
+  --erro: #e5484d;
+  --erro-claro: rgba(229, 72, 77, 0.1);
+
+  --gradiente-pastel: linear-gradient(90deg, #f5c99b, #c4b5e8);
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  font: 16px/150% var(--sans);
+  color-scheme: light;
+  color: var(--texto);
+  background: var(--fundo);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.tema-empresa {
+  --acento: #e8998f;
+  --acento-escuro: #d97b6e;
+  --acento-claro: rgba(232, 153, 143, 0.14);
+}
+
+.tema-admin {
+  --acento: #7fae6e;
+  --acento-escuro: #66965a;
+  --acento-claro: rgba(127, 174, 110, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3 {
+  font-family: var(--sans);
+  font-weight: 600;
+  color: var(--titulo);
+  margin: 0;
+}
+
+h1 {
+  font-size: 28px;
+  letter-spacing: -0.3px;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+p {
+  margin: 0;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+a {
+  color: var(--acento);
+}

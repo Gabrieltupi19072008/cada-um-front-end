@@ -1,0 +1,663 @@
+/* ---------- Estrutura geral ---------- */
+
+.pagina {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--fundo);
+}
+
+.barra-superior {
+  background: #ffffff;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--borda-sutil);
+}
+
+.conteudo-pagina {
+  flex: 1;
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.conteudo-pagina--padrao {
+  max-width: 720px;
+}
+
+.conteudo-pagina--largo {
+  max-width: 1080px;
+}
+
+.conteudo-pagina--cheia {
+  max-width: none;
+  padding: 0;
+}
+
+/* ---------- Cartão ---------- */
+
+.cartao-painel {
+  background: var(--cartao);
+  border-radius: 14px;
+  box-shadow: var(--sombra);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.cartao-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  background: var(--acento);
+}
+
+.cartao-cabecalho__titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cartao-corpo {
+  padding: 24px;
+}
+
+/* ---------- Botões ---------- */
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: opacity 0.15s ease;
+}
+
+.botao:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.botao--primario {
+  background: var(--acento);
+  color: #fff;
+}
+
+.botao--primario:hover:not(:disabled) {
+  background: var(--acento-escuro);
+}
+
+.botao--contorno {
+  background: transparent;
+  border-color: var(--acento);
+  color: var(--acento);
+}
+
+.botao--contorno:hover:not(:disabled) {
+  background: var(--acento-claro);
+}
+
+.botao--gradiente {
+  background: var(--gradiente-pastel);
+  color: #4a3a20;
+  border-radius: 999px;
+}
+
+.botao--gradiente:hover:not(:disabled) {
+  opacity: 0.92;
+}
+
+.botao--sucesso {
+  background: var(--sucesso);
+  color: #fff;
+}
+
+.botao--sucesso:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.botao--bloco {
+  width: 100%;
+}
+
+/* ---------- Abas ---------- */
+
+.abas {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.aba {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--texto-suave);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.aba--ativa {
+  background: var(--acento);
+  color: #fff;
+}
+
+/* ---------- Selos / badges ---------- */
+
+.selo {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.selo--acento {
+  background: var(--acento-claro);
+  color: var(--acento-escuro);
+}
+
+.selo--sucesso {
+  background: var(--sucesso-claro);
+  color: var(--sucesso);
+}
+
+.selo--alerta {
+  background: var(--alerta-claro);
+  color: var(--alerta);
+}
+
+.selo--navy {
+  background: var(--fundo-2);
+  color: var(--texto-suave);
+}
+
+/* ---------- Barra de progresso ---------- */
+
+.barra-progresso-fundo {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--borda-sutil);
+  overflow: hidden;
+}
+
+.barra-progresso-preenchimento {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.barra-progresso--acento {
+  background: var(--acento);
+}
+
+.barra-progresso--sucesso {
+  background: var(--sucesso);
+}
+
+.barra-progresso--alerta {
+  background: var(--alerta);
+}
+
+/* ---------- Avisos ---------- */
+
+.aviso {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.aviso--sucesso {
+  background: var(--sucesso-claro);
+  color: var(--sucesso);
+}
+
+.aviso--erro {
+  background: var(--erro-claro);
+  color: var(--erro);
+}
+
+/* ---------- Formulários ---------- */
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texto);
+  margin-bottom: 16px;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--borda-sutil);
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 400;
+  color: var(--titulo);
+  background: var(--cartao);
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  outline: 2px solid var(--acento);
+  outline-offset: 1px;
+}
+
+.campo textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.grade-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0 16px;
+}
+
+.acoes-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.seletor-tipo {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.seletor-tipo button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px;
+  border: 1px solid var(--borda-sutil);
+  border-radius: 8px;
+  background: var(--cartao);
+  color: var(--texto);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.seletor-tipo button.ativo {
+  border-color: var(--acento);
+  color: var(--acento);
+  background: var(--acento-claro);
+}
+
+/* ---------- Tela de login/cadastro ---------- */
+
+.tela-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+  padding: 32px 20px;
+  background: linear-gradient(120deg, #fdf3df 0%, #fbeaea 45%, #eaf3e3 100%);
+}
+
+.login-cartao {
+  width: 100%;
+  max-width: 760px;
+}
+
+.login-cartao--simples {
+  max-width: 400px;
+}
+
+.login-cartao--simples .cartao-corpo {
+  text-align: center;
+}
+
+.login-cartao--simples .cartao-corpo form {
+  text-align: left;
+}
+
+.login-link {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+/* ---------- Dashboard do candidato ---------- */
+
+.grade-dashboard-candidato {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 20px;
+}
+
+.cartao-perfil-lateral {
+  text-align: center;
+  padding: 24px 20px;
+  background: var(--fundo);
+  border-radius: 12px;
+}
+
+.avatar-circulo {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--acento);
+  color: #fff;
+  font-weight: 700;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.perfil-lateral__nome {
+  font-weight: 600;
+  color: var(--titulo);
+}
+
+.perfil-lateral__info {
+  font-size: 13px;
+  color: var(--texto-suave);
+  margin: 4px 0 16px;
+}
+
+.perfil-lateral__progresso-rotulo {
+  font-size: 12px;
+  color: var(--texto-suave);
+  margin-top: 6px;
+}
+
+.lista-funcionalidades {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cartao-funcionalidade {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid var(--borda-sutil);
+  border-radius: 12px;
+}
+
+.cartao-funcionalidade__icone {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--acento-claro);
+  color: var(--acento);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cartao-funcionalidade__texto {
+  flex: 1;
+}
+
+.cartao-funcionalidade__texto p {
+  font-size: 13px;
+  color: var(--texto-suave);
+  margin-top: 2px;
+}
+
+@media (max-width: 640px) {
+  .grade-dashboard-candidato {
+    grid-template-columns: 1fr;
+  }
+  .cartao-funcionalidade {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* ---------- Currículo do candidato (visão empresa e própria) ---------- */
+
+.grade-curriculo {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 20px;
+}
+
+.curriculo-lateral {
+  text-align: center;
+  padding: 24px 20px;
+}
+
+.curriculo-lateral__habilidades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.secao-curriculo {
+  margin-bottom: 20px;
+}
+
+.secao-curriculo:last-child {
+  margin-bottom: 0;
+}
+
+.secao-curriculo h2 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--texto-suave);
+  margin-bottom: 8px;
+}
+
+.item-curriculo {
+  margin-bottom: 10px;
+}
+
+.item-curriculo strong {
+  color: var(--titulo);
+  font-size: 14px;
+}
+
+.item-curriculo p {
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+@media (max-width: 640px) {
+  .grade-curriculo {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Lista de candidatos (busca da empresa) ---------- */
+
+.filtros-busca {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0 16px;
+  align-items: end;
+  margin-bottom: 20px;
+}
+
+.filtros-busca .campo {
+  margin-bottom: 0;
+}
+
+.contagem-resultados {
+  font-size: 13px;
+  color: var(--texto-suave);
+  margin-bottom: 12px;
+}
+
+.lista-candidatos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.linha-candidato {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--borda-sutil);
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.linha-candidato__nome {
+  color: var(--acento);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.linha-candidato__info {
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+/* ---------- Chips (adaptações da vaga) ---------- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--borda-sutil);
+  background: var(--cartao);
+  color: var(--texto);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.chip--selecionado {
+  border-color: var(--acento);
+  color: var(--acento);
+  background: var(--acento-claro);
+  font-weight: 600;
+}
+
+/* ---------- Estatísticas (admin) ---------- */
+
+.grade-estatisticas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.estatistica-cartao {
+  padding: 20px;
+  text-align: center;
+  background: var(--fundo);
+  border-radius: 12px;
+}
+
+.estatistica-cartao__valor {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--acento);
+}
+
+.estatistica-cartao__rotulo {
+  font-size: 13px;
+  color: var(--texto-suave);
+  margin-top: 4px;
+}
+
+.grade-admin {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 800px) {
+  .grade-admin {
+    grid-template-columns: 1fr;
+  }
+}
+
+.linha-aprovacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--borda-sutil);
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.linha-aprovacao__texto p {
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+.linha-cota {
+  margin-bottom: 16px;
+}
+
+.linha-cota__topo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.linha-cota__topo strong {
+  color: var(--titulo);
+}
+
+/* ---------- Genérico ---------- */
+
+.texto-suave {
+  color: var(--texto-suave);
+  font-size: 14px;
+}
+
+.espaco-entre {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
