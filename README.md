@@ -1,16 +1,18 @@
-# React + Vite
+# CadaUm — Front-end
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Front-end em React (Vite) da plataforma CadaUm, uma plataforma de currículos e vagas para pessoas com TEA.
 
-Currently, two official plugins are available:
+## Rodando localmente
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+Por padrão a aplicação espera o back-end em `http://localhost:8000`. Para apontar para outra URL, crie um
+arquivo `.env` (veja `.env.example`) com a variável `VITE_API_URL`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Back-end
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+O código do back-end (FastAPI) fica em um repositório separado:
+[cada-um-back-end](https://github.com/Gabrieltupi19072008/cada-um-back-end).
