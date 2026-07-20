@@ -67,7 +67,7 @@ export default function PainelCandidato() {
   const percentual = calcularPercentualPerfil(perfil)
 
   return (
-    <Layout largura="largo">
+    <Layout largura="largo" centralizar>
       <Cartao
         titulo={`Início — Olá, ${primeiroNome}!`}
         icone={Home}

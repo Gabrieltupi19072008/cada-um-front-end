@@ -47,7 +47,7 @@ export default function PainelEmpresa() {
   }
 
   return (
-    <Layout tema="empresa" largura="largo">
+    <Layout tema="empresa" largura="largo" centralizar>
       <Cartao
         titulo={`${perfil.razao_social || perfil.usuario.nome} — Painel Principal`}
         icone={Building2}

@@ -81,7 +81,7 @@ export default function PainelAdmin() {
   }
 
   return (
-    <Layout tema="admin" largura="largo">
+    <Layout tema="admin" largura="largo" centralizar>
       <Cartao
         titulo="Painel Admin — Visão Geral da Plataforma"
         icone={Settings}
