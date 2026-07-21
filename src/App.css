@@ -277,6 +277,12 @@
   min-height: 80px;
 }
 
+.campo-dica {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--texto-suave);
+}
+
 .grade-campos {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));

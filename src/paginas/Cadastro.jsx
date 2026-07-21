@@ -106,8 +106,10 @@ export default function Cadastro() {
                   type="password"
                   value={dados.senha}
                   onChange={(e) => atualizar('senha', e.target.value)}
+                  minLength={8}
                   required
                 />
+                <small className="campo-dica">Mínimo de 8 caracteres, com letras e números</small>
               </label>
 
               {camposExtras.map((campo) => (
