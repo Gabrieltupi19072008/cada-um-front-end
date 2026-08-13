@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Home, ClipboardList, Search, Bell, Pencil, LogOut } from 'lucide-react'
+import { Home, ClipboardList, Search, Bell, Pencil, LogOut, ShieldCheck } from 'lucide-react'
 import Layout from '../componentes/Layout'
 import Cartao from '../componentes/Cartao'
 import Botao from '../componentes/Botao'
@@ -140,6 +140,19 @@ export default function PainelCandidato() {
               </div>
               <Botao variante="contorno" onClick={() => navegar('/candidato/interesses')}>
                 Ver contatos
+              </Botao>
+            </div>
+
+            <div className="cartao-funcionalidade">
+              <span className="cartao-funcionalidade__icone">
+                <ShieldCheck size={20} />
+              </span>
+              <div className="cartao-funcionalidade__texto">
+                <strong>Privacidade</strong>
+                <p>Controle quem pode ver o seu perfil</p>
+              </div>
+              <Botao variante="contorno" onClick={() => navegar('/candidato/privacidade')}>
+                Gerenciar
               </Botao>
             </div>
           </div>

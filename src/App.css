@@ -698,3 +698,70 @@
   gap: 12px;
   flex-wrap: wrap;
 }
+
+.linha-toggle {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--borda-sutil);
+}
+
+.linha-toggle:last-child {
+  border-bottom: none;
+}
+
+.linha-toggle__texto h3 {
+  font-size: 14.5px;
+  margin-bottom: 4px;
+}
+
+.linha-toggle__texto p {
+  font-size: 13px;
+  color: var(--texto-suave);
+  max-width: 46ch;
+}
+
+.interruptor {
+  position: relative;
+  width: 44px;
+  height: 25px;
+  flex: none;
+}
+
+.interruptor input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.interruptor-trilho {
+  position: absolute;
+  inset: 0;
+  background: #d8d2c4;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.interruptor-trilho::before {
+  content: '';
+  position: absolute;
+  width: 19px;
+  height: 19px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.15s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.interruptor input:checked + .interruptor-trilho {
+  background: var(--sucesso);
+}
+
+.interruptor input:checked + .interruptor-trilho::before {
+  transform: translateX(19px);
+}
