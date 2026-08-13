@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Home, ClipboardList, Search, Bell, Pencil, LogOut, ShieldCheck } from 'lucide-react'
+import { Home, ClipboardList, Search, Bell, Pencil, LogOut, ShieldCheck, GraduationCap } from 'lucide-react'
 import Layout from '../componentes/Layout'
 import Cartao from '../componentes/Cartao'
 import Botao from '../componentes/Botao'
@@ -155,6 +155,21 @@ export default function PainelCandidato() {
                 Gerenciar
               </Botao>
             </div>
+
+            {(perfil.tipos_vinculo || '').split(',').some((t) => t === 'estagio' || t === 'menor_aprendiz') && (
+              <div className="cartao-funcionalidade">
+                <span className="cartao-funcionalidade__icone">
+                  <GraduationCap size={20} />
+                </span>
+                <div className="cartao-funcionalidade__texto">
+                  <strong>Orientação</strong>
+                  <p>Dicas de currículo, entrevista e seus direitos</p>
+                </div>
+                <Botao variante="contorno" onClick={() => navegar('/candidato/orientacao')}>
+                  Ver conteúdos
+                </Botao>
+              </div>
+            )}
           </div>
         </div>
       </Cartao>

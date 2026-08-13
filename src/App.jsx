@@ -9,6 +9,7 @@ import CurriculoCandidato from './paginas/CurriculoCandidato'
 import VagasDisponiveis from './paginas/VagasDisponiveis'
 import InteressesRecebidos from './paginas/InteressesRecebidos'
 import Privacidade from './paginas/Privacidade'
+import Orientacao from './paginas/Orientacao'
 import PainelEmpresa from './paginas/PainelEmpresa'
 import CurriculoVisaoEmpresa from './paginas/CurriculoVisaoEmpresa'
 import PublicarVaga from './paginas/PublicarVaga'
@@ -75,6 +76,14 @@ export default function App() {
             element={
               <RotaProtegida perfilExigido="candidato">
                 <Privacidade />
+              </RotaProtegida>
+            }
+          />
+          <Route
+            path="/candidato/orientacao"
+            element={
+              <RotaProtegida perfilExigido="candidato">
+                <Orientacao />
               </RotaProtegida>
             }
           />

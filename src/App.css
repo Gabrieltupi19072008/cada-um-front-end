@@ -765,3 +765,62 @@
 .interruptor input:checked + .interruptor-trilho::before {
   transform: translateX(19px);
 }
+
+.grade-orientacao {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.card-video {
+  border: 1px solid var(--borda-sutil);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--cartao);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-video__thumb {
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, var(--acento-claro), var(--fundo-2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-video__play {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(58, 54, 48, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-video__corpo {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-video__categoria {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--acento-escuro);
+  font-weight: 700;
+}
+
+.card-video__titulo {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--titulo);
+}
+
+.card-video__desc {
+  font-size: 12.5px;
+  color: var(--texto-suave);
+}
