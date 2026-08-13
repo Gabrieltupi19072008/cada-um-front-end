@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Building2, Search, Folder, Bell, BarChart2, LogOut } from 'lucide-react'
+import { Building2, Search, Folder, Bell, BarChart2, LogOut, UserCheck } from 'lucide-react'
 import Layout from '../componentes/Layout'
 import Cartao from '../componentes/Cartao'
 import Abas from '../componentes/Abas'
@@ -8,12 +8,14 @@ import { useAuth } from '../contexto/AuthContext'
 import AbaBuscarCandidatos from './empresa/AbaBuscarCandidatos'
 import AbaMinhasVagas from './empresa/AbaMinhasVagas'
 import AbaInteressesEnviados from './empresa/AbaInteressesEnviados'
+import AbaCandidaturasRecebidas from './empresa/AbaCandidaturasRecebidas'
 import AbaRelatorioCota from './empresa/AbaRelatorioCota'
 
 const ABAS = [
   { chave: 'buscar', rotulo: 'Buscar Candidatos', icone: Search },
   { chave: 'vagas', rotulo: 'Minhas Vagas', icone: Folder },
   { chave: 'interesses', rotulo: 'Interesses Enviados', icone: Bell },
+  { chave: 'candidaturas', rotulo: 'Candidaturas Recebidas', icone: UserCheck },
   { chave: 'cota', rotulo: 'Relatório de Cota', icone: BarChart2 },
 ]
 
@@ -71,6 +73,7 @@ export default function PainelEmpresa() {
         {abaAtiva === 'buscar' && <AbaBuscarCandidatos />}
         {abaAtiva === 'vagas' && <AbaMinhasVagas />}
         {abaAtiva === 'interesses' && <AbaInteressesEnviados />}
+        {abaAtiva === 'candidaturas' && <AbaCandidaturasRecebidas />}
         {abaAtiva === 'cota' && <AbaRelatorioCota />}
       </Cartao>
     </Layout>
