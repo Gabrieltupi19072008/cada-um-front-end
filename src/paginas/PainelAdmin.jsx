@@ -12,7 +12,13 @@ export default function PainelAdmin() {
   const [pendentes, setPendentes] = useState([])
   const [cotas, setCotas] = useState([])
   const [erro, setErro] = useState('')
+  const [dadosReceita, setDadosReceita] = useState({})
   const { sair } = useAuth()
+
+  async function consultarReceita(empresaId) {
+    const resposta = await cliente.get(`/admin/empresas/${empresaId}/cnpj-receita`)
+    setDadosReceita((atual) => ({ ...atual, [empresaId]: resposta.data }))
+  }
 
   async function carregarTudo() {
     try {
@@ -29,6 +35,7 @@ export default function PainelAdmin() {
           id: e.id,
           nome: e.razao_social || e.usuario.nome,
           subtitulo: 'Aguardando aprovação',
+          cnpj: e.cnpj,
         })),
         ...candidatosResp.data.map((c) => ({
           tipo: 'candidato',
@@ -122,16 +129,61 @@ export default function PainelAdmin() {
             </h2>
             {pendentes.length === 0 && <p className="texto-suave">Nenhuma aprovação pendente.</p>}
             {pendentes.map((item) => (
-              <div key={`${item.tipo}-${item.id}`} className="linha-aprovacao">
-                <div className="linha-aprovacao__texto">
-                  <strong>
-                    {item.nome} {item.tipo === 'candidato' ? '(candidato)' : ''}
-                  </strong>
-                  <p>{item.subtitulo}</p>
+              <div key={`${item.tipo}-${item.id}`} className="linha-aprovacao" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                  <div className="linha-aprovacao__texto">
+                    <strong>
+                      {item.nome} {item.tipo === 'candidato' ? '(candidato)' : ''}
+                    </strong>
+                    <p>{item.subtitulo}</p>
+                  </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {item.tipo === 'empresa' && !dadosReceita[item.id] && (
+                      <Botao variante="contorno" onClick={() => consultarReceita(item.id)}>
+                        Consultar Receita
+                      </Botao>
+                    )}
+                    <Botao variante="sucesso" icone={Check} onClick={() => aprovar(item)}>
+                      Aprovar
+                    </Botao>
+                  </div>
                 </div>
-                <Botao variante="sucesso" icone={Check} onClick={() => aprovar(item)}>
-                  Aprovar
-                </Botao>
+                {item.tipo === 'empresa' && dadosReceita[item.id] && (
+                  <div className="comparacao">
+                    <div className="comparacao-bloco">
+                      <h3>Informado pela empresa</h3>
+                      <div className="comparacao-linha">
+                        <span className="comparacao-linha__chave">Razão social</span>
+                        <span className="comparacao-linha__valor">{item.nome}</span>
+                      </div>
+                      <div className="comparacao-linha">
+                        <span className="comparacao-linha__chave">CNPJ</span>
+                        <span className="comparacao-linha__valor">{item.cnpj || 'Não informado'}</span>
+                      </div>
+                    </div>
+                    <div className="comparacao-bloco comparacao-bloco--receita">
+                      <h3>Dados oficiais (Receita Federal)</h3>
+                      {dadosReceita[item.id].encontrado ? (
+                        <>
+                          <div className="comparacao-linha">
+                            <span className="comparacao-linha__chave">Razão social</span>
+                            <span className="comparacao-linha__valor">{dadosReceita[item.id].razao_social}</span>
+                          </div>
+                          <div className="comparacao-linha">
+                            <span className="comparacao-linha__chave">Situação</span>
+                            <span className="comparacao-linha__valor">{dadosReceita[item.id].situacao_cadastral}</span>
+                          </div>
+                          <div className="comparacao-linha">
+                            <span className="comparacao-linha__chave">Nome fantasia</span>
+                            <span className="comparacao-linha__valor">{dadosReceita[item.id].nome_fantasia || '—'}</span>
+                          </div>
+                        </>
+                      ) : (
+                        <p className="texto-suave">CNPJ não encontrado na Receita — confira manualmente antes de aprovar.</p>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
