@@ -13,11 +13,24 @@ export default function PainelAdmin() {
   const [cotas, setCotas] = useState([])
   const [erro, setErro] = useState('')
   const [dadosReceita, setDadosReceita] = useState({})
+  const [consultandoReceita, setConsultandoReceita] = useState({})
+  const [erroReceita, setErroReceita] = useState({})
   const { sair } = useAuth()
 
   async function consultarReceita(empresaId) {
-    const resposta = await cliente.get(`/admin/empresas/${empresaId}/cnpj-receita`)
-    setDadosReceita((atual) => ({ ...atual, [empresaId]: resposta.data }))
+    setConsultandoReceita((atual) => ({ ...atual, [empresaId]: true }))
+    setErroReceita((atual) => ({ ...atual, [empresaId]: '' }))
+    try {
+      const resposta = await cliente.get(`/admin/empresas/${empresaId}/cnpj-receita`)
+      setDadosReceita((atual) => ({ ...atual, [empresaId]: resposta.data }))
+    } catch (erroRequisicao) {
+      setErroReceita((atual) => ({
+        ...atual,
+        [empresaId]: erroRequisicao.response?.data?.detail || 'Não foi possível consultar a Receita',
+      }))
+    } finally {
+      setConsultandoReceita((atual) => ({ ...atual, [empresaId]: false }))
+    }
   }
 
   async function carregarTudo() {
@@ -139,8 +152,12 @@ export default function PainelAdmin() {
                   </div>
                   <div style={{ display: 'flex', gap: 8 }}>
                     {item.tipo === 'empresa' && !dadosReceita[item.id] && (
-                      <Botao variante="contorno" onClick={() => consultarReceita(item.id)}>
-                        Consultar Receita
+                      <Botao
+                        variante="contorno"
+                        onClick={() => consultarReceita(item.id)}
+                        disabled={!!consultandoReceita[item.id]}
+                      >
+                        {consultandoReceita[item.id] ? 'Consultando...' : 'Consultar Receita'}
                       </Botao>
                     )}
                     <Botao variante="sucesso" icone={Check} onClick={() => aprovar(item)}>
@@ -148,6 +165,11 @@ export default function PainelAdmin() {
                     </Botao>
                   </div>
                 </div>
+                {item.tipo === 'empresa' && erroReceita[item.id] && (
+                  <p className="aviso aviso--erro" style={{ marginTop: 8 }}>
+                    {erroReceita[item.id]}
+                  </p>
+                )}
                 {item.tipo === 'empresa' && dadosReceita[item.id] && (
                   <div className="comparacao">
                     <div className="comparacao-bloco">

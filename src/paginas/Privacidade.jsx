@@ -10,6 +10,7 @@ import cliente from '../api/cliente'
 export default function Privacidade() {
   const [perfil, setPerfil] = useState(null)
   const [erro, setErro] = useState('')
+  const [erroSalvar, setErroSalvar] = useState('')
   const [salvando, setSalvando] = useState(false)
   const navegar = useNavigate()
 
@@ -22,10 +23,13 @@ export default function Privacidade() {
 
   async function alternarVisibilidade() {
     setSalvando(true)
+    setErroSalvar('')
     try {
       const novoValor = !perfil.visivel_para_empresas
       await cliente.put('/candidatos/me', { visivel_para_empresas: novoValor })
       setPerfil((atual) => ({ ...atual, visivel_para_empresas: novoValor }))
+    } catch (erroRequisicao) {
+      setErroSalvar(erroRequisicao.response?.data?.detail || 'Não foi possível salvar')
     } finally {
       setSalvando(false)
     }
@@ -56,6 +60,7 @@ export default function Privacidade() {
         <Aviso variante="sucesso">
           De acordo com a LGPD, você decide quem pode ver o seu perfil. Isso pode ser mudado a qualquer momento.
         </Aviso>
+        {erroSalvar && <Aviso variante="erro">{erroSalvar}</Aviso>}
         <div className="linha-toggle">
           <div className="linha-toggle__texto">
             <h3>Meu perfil está visível para empresas</h3>
