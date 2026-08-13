@@ -20,10 +20,12 @@ export default function AbaDadosPessoais({ perfil, aoSalvar }) {
   })
   const [salvando, setSalvando] = useState(false)
   const [sucesso, setSucesso] = useState(false)
+  const [erro, setErro] = useState('')
 
   function atualizar(campo, valor) {
     setDados((atual) => ({ ...atual, [campo]: valor }))
     setSucesso(false)
+    setErro('')
   }
 
   function alternarTipoVinculo(tipo) {
@@ -33,14 +35,20 @@ export default function AbaDadosPessoais({ perfil, aoSalvar }) {
       return { ...atual, tipos_vinculo: novos }
     })
     setSucesso(false)
+    setErro('')
   }
 
   async function salvar() {
     setSalvando(true)
     try {
-      await cliente.put('/candidatos/me', { ...dados, tipos_vinculo: dados.tipos_vinculo.join(',') })
+      const corpo = { ...dados, tipos_vinculo: dados.tipos_vinculo.join(',') }
+      if (!corpo.escolaridade) delete corpo.escolaridade
+      if (!corpo.data_nascimento) delete corpo.data_nascimento
+      await cliente.put('/candidatos/me', corpo)
       setSucesso(true)
       aoSalvar()
+    } catch (erroRequisicao) {
+      setErro(erroRequisicao.response?.data?.detail || 'Não foi possível salvar seus dados')
     } finally {
       setSalvando(false)
     }
@@ -49,6 +57,7 @@ export default function AbaDadosPessoais({ perfil, aoSalvar }) {
   return (
     <div>
       {sucesso && <Aviso variante="sucesso">Dados salvos!</Aviso>}
+      {erro && <Aviso variante="erro">{erro}</Aviso>}
       <div className="grade-campos">
         <label className="campo">
           Nome Completo
