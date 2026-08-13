@@ -42,8 +42,8 @@ export default function AbaDadosPessoais({ perfil, aoSalvar }) {
     setSalvando(true)
     try {
       const corpo = { ...dados, tipos_vinculo: dados.tipos_vinculo.join(',') }
-      if (!corpo.escolaridade) delete corpo.escolaridade
-      if (!corpo.data_nascimento) delete corpo.data_nascimento
+      corpo.escolaridade = corpo.escolaridade || null
+      corpo.data_nascimento = corpo.data_nascimento || null
       await cliente.put('/candidatos/me', corpo)
       setSucesso(true)
       aoSalvar()
