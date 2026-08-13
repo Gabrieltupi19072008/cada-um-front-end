@@ -42,7 +42,7 @@ export default function AbaTea({ perfil, aoSalvar }) {
         </select>
       </label>
       <label className="campo">
-        Necessidades especiais / adaptações que você precisa
+        O que preciso para trabalhar bem
         <textarea
           value={necessidades}
           onChange={(e) => {

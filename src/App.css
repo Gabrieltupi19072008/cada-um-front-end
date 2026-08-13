@@ -326,6 +326,33 @@
   background: var(--acento-claro);
 }
 
+.checks {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.check-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border: 1px solid var(--borda-sutil);
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 13.5px;
+  color: var(--texto);
+  cursor: pointer;
+  user-select: none;
+}
+
+.check-pill input {
+  accent-color: var(--acento);
+  width: 15px;
+  height: 15px;
+}
+
 /* ---------- Tela de login/cadastro ---------- */
 
 .tela-login {
