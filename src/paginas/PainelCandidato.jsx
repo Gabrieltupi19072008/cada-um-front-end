@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Home, ClipboardList, Search, Bell, Pencil, LogOut, ShieldCheck, GraduationCap } from 'lucide-react'
+import { Home, ClipboardList, Search, Bell, Pencil, LogOut, ShieldCheck, GraduationCap, Send } from 'lucide-react'
 import Layout from '../componentes/Layout'
 import Cartao from '../componentes/Cartao'
 import Botao from '../componentes/Botao'
@@ -127,6 +127,19 @@ export default function PainelCandidato() {
               </div>
               <Botao variante="contorno" onClick={() => navegar('/candidato/vagas')}>
                 Ver vagas
+              </Botao>
+            </div>
+
+            <div className="cartao-funcionalidade">
+              <span className="cartao-funcionalidade__icone">
+                <Send size={20} />
+              </span>
+              <div className="cartao-funcionalidade__texto">
+                <strong>Minhas Candidaturas</strong>
+                <p>Acompanhe as vagas em que você se candidatou</p>
+              </div>
+              <Botao variante="contorno" onClick={() => navegar('/candidato/candidaturas')}>
+                Ver candidaturas
               </Botao>
             </div>
 

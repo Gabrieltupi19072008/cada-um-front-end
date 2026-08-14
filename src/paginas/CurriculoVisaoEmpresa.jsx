@@ -9,6 +9,16 @@ import cliente from '../api/cliente'
 
 const ROTULOS_GRAU_TEA = { leve: 'TEA Leve', moderado: 'TEA Moderado', severo: 'TEA Severo' }
 
+const ROTULOS_ESCOLARIDADE = {
+  fundamental_incompleto: 'Ensino fundamental incompleto',
+  fundamental_completo: 'Ensino fundamental completo',
+  medio_incompleto: 'Ensino médio incompleto',
+  medio_completo: 'Ensino médio completo',
+  superior_incompleto: 'Ensino superior incompleto',
+  superior_completo: 'Ensino superior completo',
+  pos_graduacao: 'Pós-graduação',
+}
+
 function obterIniciais(nome) {
   const partes = nome.trim().split(/\s+/)
   return partes.slice(0, 2).map((parte) => parte[0].toUpperCase()).join('')
@@ -118,7 +128,18 @@ export default function CurriculoVisaoEmpresa() {
             </div>
 
             <div className="secao-curriculo">
-              <h2>Necessidades Especiais</h2>
+              <h2>Escolaridade e cursos</h2>
+              <p>{candidato.escolaridade ? ROTULOS_ESCOLARIDADE[candidato.escolaridade] : 'Não informada.'}</p>
+              {candidato.cursos_profissionalizantes && <p>{candidato.cursos_profissionalizantes}</p>}
+            </div>
+
+            <div className="secao-curriculo">
+              <h2>Bairros aceitos</h2>
+              <p>{candidato.bairros_aceitos || 'Não informado.'}</p>
+            </div>
+
+            <div className="secao-curriculo">
+              <h2>O que preciso para trabalhar bem</h2>
               <p>{candidato.necessidades_especiais || 'Nenhuma informada.'}</p>
             </div>
 

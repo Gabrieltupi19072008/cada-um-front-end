@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Check, X } from 'lucide-react'
 import cliente from '../../api/cliente'
 import Selo from '../../componentes/Selo'
+import Botao from '../../componentes/Botao'
 
 const ROTULOS_STATUS = {
   pendente: { texto: 'Novo', variante: 'sucesso' },
@@ -12,18 +15,35 @@ const ROTULOS_STATUS = {
 export default function AbaCandidaturasRecebidas() {
   const [candidaturas, setCandidaturas] = useState([])
   const [erro, setErro] = useState('')
+  const [erroResposta, setErroResposta] = useState('')
+  const navegar = useNavigate()
 
-  useEffect(() => {
+  function carregar() {
     cliente
       .get('/empresas/me/candidaturas')
       .then((resposta) => setCandidaturas(resposta.data))
       .catch(() => setErro('Não foi possível carregar as candidaturas'))
+  }
+
+  useEffect(() => {
+    carregar()
   }, [])
+
+  async function responder(id, status) {
+    setErroResposta('')
+    try {
+      await cliente.put(`/empresas/me/candidaturas/${id}`, { status })
+      carregar()
+    } catch {
+      setErroResposta('Não foi possível registrar sua resposta. Tente novamente.')
+    }
+  }
 
   return (
     <div>
       <h2 style={{ marginBottom: 16 }}>Candidaturas recebidas</h2>
       {erro && <p className="aviso aviso--erro">{erro}</p>}
+      {erroResposta && <p className="aviso aviso--erro">{erroResposta}</p>}
       {candidaturas.length === 0 && !erro && (
         <p className="texto-suave">Ninguém se candidatou diretamente às suas vagas ainda.</p>
       )}
@@ -32,11 +52,32 @@ export default function AbaCandidaturasRecebidas() {
           <div key={candidatura.id} className="linha-candidato">
             <div>
               <p className="linha-candidato__nome">{candidatura.candidato.usuario.nome}</p>
-              <p className="linha-candidato__info">{candidatura.mensagem || 'Candidatura direta pela vaga'}</p>
+              <p className="linha-candidato__info">
+                {candidatura.vaga ? `Vaga: ${candidatura.vaga.titulo}` : 'Candidatura direta pela vaga'}
+                {candidatura.mensagem ? ` — "${candidatura.mensagem}"` : ''}
+              </p>
             </div>
-            <Selo variante={ROTULOS_STATUS[candidatura.status].variante}>
-              {ROTULOS_STATUS[candidatura.status].texto}
-            </Selo>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <Selo variante={ROTULOS_STATUS[candidatura.status].variante}>
+                {ROTULOS_STATUS[candidatura.status].texto}
+              </Selo>
+              <Botao
+                variante="contorno"
+                onClick={() => navegar(`/empresa/candidatos/${candidatura.candidato.id}`)}
+              >
+                Ver currículo
+              </Botao>
+              {(candidatura.status === 'pendente' || candidatura.status === 'visualizado') && (
+                <>
+                  <Botao variante="sucesso" icone={Check} onClick={() => responder(candidatura.id, 'aceito')}>
+                    Aceitar
+                  </Botao>
+                  <Botao variante="contorno" icone={X} onClick={() => responder(candidatura.id, 'recusado')}>
+                    Recusar
+                  </Botao>
+                </>
+              )}
+            </div>
           </div>
         ))}
       </div>
