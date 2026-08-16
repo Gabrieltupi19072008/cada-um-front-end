@@ -9,6 +9,7 @@ export default function AbaTea({ perfil, aoSalvar }) {
   const [necessidades, setNecessidades] = useState(perfil.necessidades_especiais || '')
   const [salvando, setSalvando] = useState(false)
   const [sucesso, setSucesso] = useState(false)
+  const [erro, setErro] = useState('')
 
   async function salvar() {
     setSalvando(true)
@@ -19,6 +20,8 @@ export default function AbaTea({ perfil, aoSalvar }) {
       })
       setSucesso(true)
       aoSalvar()
+    } catch (erroRequisicao) {
+      setErro(erroRequisicao.response?.data?.detail || 'Não foi possível salvar seus dados')
     } finally {
       setSalvando(false)
     }
@@ -27,6 +30,7 @@ export default function AbaTea({ perfil, aoSalvar }) {
   return (
     <div>
       {sucesso && <Aviso variante="sucesso">Informações salvas!</Aviso>}
+      {erro && <Aviso variante="erro">{erro}</Aviso>}
       <label className="campo">
         Grau de TEA
         <select
@@ -34,6 +38,7 @@ export default function AbaTea({ perfil, aoSalvar }) {
           onChange={(e) => {
             setGrauTea(e.target.value)
             setSucesso(false)
+            setErro('')
           }}
         >
           <option value="leve">Leve</option>
@@ -48,6 +53,7 @@ export default function AbaTea({ perfil, aoSalvar }) {
           onChange={(e) => {
             setNecessidades(e.target.value)
             setSucesso(false)
+            setErro('')
           }}
           placeholder="Ex: Prefere ambiente calmo, precisa de instruções escritas..."
         />

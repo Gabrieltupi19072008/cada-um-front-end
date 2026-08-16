@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { Plus, Trash2 } from 'lucide-react'
 import cliente from '../../api/cliente'
 import Botao from '../../componentes/Botao'
+import Aviso from '../../componentes/Aviso'
 
 const VAZIO = { instituicao: '', curso: '', nivel: '', ano_inicio: '', ano_conclusao: '', em_andamento: false }
 
 export default function AbaFormacao({ perfil, aoAlterar }) {
   const [novo, setNovo] = useState(VAZIO)
   const [enviando, setEnviando] = useState(false)
+  const [erro, setErro] = useState('')
 
   function atualizar(campo, valor) {
     setNovo((atual) => ({ ...atual, [campo]: valor }))
@@ -15,6 +17,7 @@ export default function AbaFormacao({ perfil, aoAlterar }) {
 
   async function adicionar() {
     setEnviando(true)
+    setErro('')
     try {
       await cliente.post('/candidatos/me/formacoes', {
         ...novo,
@@ -23,18 +26,26 @@ export default function AbaFormacao({ perfil, aoAlterar }) {
       })
       setNovo(VAZIO)
       aoAlterar()
+    } catch (erroRequisicao) {
+      setErro(erroRequisicao.response?.data?.detail || 'Não foi possível adicionar esta formação')
     } finally {
       setEnviando(false)
     }
   }
 
   async function remover(id) {
-    await cliente.delete(`/candidatos/me/formacoes/${id}`)
-    aoAlterar()
+    setErro('')
+    try {
+      await cliente.delete(`/candidatos/me/formacoes/${id}`)
+      aoAlterar()
+    } catch {
+      setErro('Não foi possível remover esta formação')
+    }
   }
 
   return (
     <div>
+      {erro && <Aviso variante="erro">{erro}</Aviso>}
       {perfil.formacoes.map((formacao) => (
         <div key={formacao.id} className="linha-candidato">
           <div>

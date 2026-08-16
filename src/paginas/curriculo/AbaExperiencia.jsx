@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { Plus, Trash2 } from 'lucide-react'
 import cliente from '../../api/cliente'
 import Botao from '../../componentes/Botao'
+import Aviso from '../../componentes/Aviso'
 
 const VAZIO = { empresa: '', cargo: '', descricao: '', data_inicio: '', data_fim: '', emprego_atual: false }
 
 export default function AbaExperiencia({ perfil, aoAlterar }) {
   const [novo, setNovo] = useState(VAZIO)
   const [enviando, setEnviando] = useState(false)
+  const [erro, setErro] = useState('')
 
   function atualizar(campo, valor) {
     setNovo((atual) => ({ ...atual, [campo]: valor }))
@@ -15,6 +17,7 @@ export default function AbaExperiencia({ perfil, aoAlterar }) {
 
   async function adicionar() {
     setEnviando(true)
+    setErro('')
     try {
       await cliente.post('/candidatos/me/experiencias', {
         ...novo,
@@ -22,18 +25,26 @@ export default function AbaExperiencia({ perfil, aoAlterar }) {
       })
       setNovo(VAZIO)
       aoAlterar()
+    } catch (erroRequisicao) {
+      setErro(erroRequisicao.response?.data?.detail || 'Não foi possível adicionar esta experiência')
     } finally {
       setEnviando(false)
     }
   }
 
   async function remover(id) {
-    await cliente.delete(`/candidatos/me/experiencias/${id}`)
-    aoAlterar()
+    setErro('')
+    try {
+      await cliente.delete(`/candidatos/me/experiencias/${id}`)
+      aoAlterar()
+    } catch {
+      setErro('Não foi possível remover esta experiência')
+    }
   }
 
   return (
     <div>
+      {erro && <Aviso variante="erro">{erro}</Aviso>}
       {perfil.experiencias.map((experiencia) => (
         <div key={experiencia.id} className="linha-candidato">
           <div>
