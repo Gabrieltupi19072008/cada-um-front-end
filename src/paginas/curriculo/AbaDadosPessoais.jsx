@@ -1,12 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Save } from 'lucide-react'
 import cliente from '../../api/cliente'
 import Botao from '../../componentes/Botao'
 import Aviso from '../../componentes/Aviso'
 import { ESTADOS_BRASIL } from '../../dados/estadosBrasil'
 
-export default function AbaDadosPessoais({ perfil, aoSalvar }) {
-  const [dados, setDados] = useState({
+function estadoInicial(perfil) {
+  return {
     data_nascimento: perfil.data_nascimento || '',
     cidade: perfil.cidade || '',
     estado: perfil.estado || '',
@@ -17,10 +17,21 @@ export default function AbaDadosPessoais({ perfil, aoSalvar }) {
     cursos_profissionalizantes: perfil.cursos_profissionalizantes || '',
     bairros_aceitos: perfil.bairros_aceitos || '',
     tipos_vinculo: perfil.tipos_vinculo ? perfil.tipos_vinculo.split(',') : [],
-  })
+  }
+}
+
+export default function AbaDadosPessoais({ perfil, aoSalvar, aoMudancaPendente }) {
+  const [dados, setDados] = useState(() => estadoInicial(perfil))
+  const [salvo, setSalvo] = useState(() => estadoInicial(perfil))
   const [salvando, setSalvando] = useState(false)
   const [sucesso, setSucesso] = useState(false)
   const [erro, setErro] = useState('')
+
+  const sujo = JSON.stringify(dados) !== JSON.stringify(salvo)
+
+  useEffect(() => {
+    aoMudancaPendente?.(sujo)
+  }, [sujo, aoMudancaPendente])
 
   function atualizar(campo, valor) {
     setDados((atual) => ({ ...atual, [campo]: valor }))
@@ -45,6 +56,7 @@ export default function AbaDadosPessoais({ perfil, aoSalvar }) {
       corpo.escolaridade = corpo.escolaridade || null
       corpo.data_nascimento = corpo.data_nascimento || null
       await cliente.put('/candidatos/me', corpo)
+      setSalvo(dados)
       setSucesso(true)
       aoSalvar()
     } catch (erroRequisicao) {
@@ -167,9 +179,10 @@ export default function AbaDadosPessoais({ perfil, aoSalvar }) {
         />
         <span className="campo-dica">Texto livre — escreva os bairros que ficam bons pra você se deslocar.</span>
       </label>
-      <Botao variante="contorno" icone={Save} onClick={salvar} disabled={salvando}>
-        {salvando ? 'Salvando...' : 'Salvar rascunho'}
+      <Botao variante={sujo ? 'primario' : 'contorno'} icone={Save} onClick={salvar} disabled={salvando || !sujo}>
+        {salvando ? 'Salvando...' : sujo ? 'Salvar rascunho' : 'Tudo salvo'}
       </Botao>
+      {sujo && !salvando && <span className="campo-dica">Você tem alterações não salvas nesta aba.</span>}
     </div>
   )
 }

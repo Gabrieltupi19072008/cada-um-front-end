@@ -1,15 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Save } from 'lucide-react'
 import cliente from '../../api/cliente'
 import Botao from '../../componentes/Botao'
 import Aviso from '../../componentes/Aviso'
 
-export default function AbaTea({ perfil, aoSalvar }) {
+export default function AbaTea({ perfil, aoSalvar, aoMudancaPendente }) {
   const [grauTea, setGrauTea] = useState(perfil.grau_tea || 'leve')
   const [necessidades, setNecessidades] = useState(perfil.necessidades_especiais || '')
+  const [salvo, setSalvo] = useState({
+    grau_tea: perfil.grau_tea || 'leve',
+    necessidades_especiais: perfil.necessidades_especiais || '',
+  })
   const [salvando, setSalvando] = useState(false)
   const [sucesso, setSucesso] = useState(false)
   const [erro, setErro] = useState('')
+
+  const sujo = grauTea !== salvo.grau_tea || necessidades !== salvo.necessidades_especiais
+
+  useEffect(() => {
+    aoMudancaPendente?.(sujo)
+  }, [sujo, aoMudancaPendente])
 
   async function salvar() {
     setSalvando(true)
@@ -18,6 +28,7 @@ export default function AbaTea({ perfil, aoSalvar }) {
         grau_tea: grauTea,
         necessidades_especiais: necessidades,
       })
+      setSalvo({ grau_tea: grauTea, necessidades_especiais: necessidades })
       setSucesso(true)
       aoSalvar()
     } catch (erroRequisicao) {
@@ -58,9 +69,10 @@ export default function AbaTea({ perfil, aoSalvar }) {
           placeholder="Ex: Prefere ambiente calmo, precisa de instruções escritas..."
         />
       </label>
-      <Botao icone={Save} onClick={salvar} disabled={salvando}>
-        {salvando ? 'Salvando...' : 'Salvar rascunho'}
+      <Botao variante={sujo ? 'primario' : 'contorno'} icone={Save} onClick={salvar} disabled={salvando || !sujo}>
+        {salvando ? 'Salvando...' : sujo ? 'Salvar rascunho' : 'Tudo salvo'}
       </Botao>
+      {sujo && !salvando && <span className="campo-dica">Você tem alterações não salvas nesta aba.</span>}
     </div>
   )
 }
