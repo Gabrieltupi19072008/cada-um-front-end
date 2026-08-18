@@ -53,27 +53,18 @@ export default function EsqueciSenha() {
                   />
                 </label>
                 <Botao type="submit" variante="gradiente" className="botao--bloco" disabled={enviando}>
-                  {enviando ? 'Enviando...' : 'Enviar nova senha'}
+                  {enviando ? 'Enviando...' : 'Enviar link de redefinição'}
                 </Botao>
               </form>
             )}
 
-            {resultado && resultado.encontrado && (
+            {resultado && (
               <div>
-                <Aviso variante="sucesso">
-                  Encontramos sua conta! Em produção isso chegaria por e-mail — por enquanto, sua senha nova é:
-                </Aviso>
-                <p style={{ fontSize: 20, fontWeight: 700, textAlign: 'center', margin: '12px 0', letterSpacing: 1 }}>
-                  {resultado.senha_temporaria}
-                </p>
+                <Aviso variante="sucesso">{resultado.mensagem}</Aviso>
                 <p className="texto-suave" style={{ textAlign: 'center' }}>
-                  Use essa senha para entrar na tela de login, e troque assim que possível.
+                  Confira sua caixa de entrada (e o spam) e clique no link para escolher uma senha nova.
                 </p>
               </div>
-            )}
-
-            {resultado && !resultado.encontrado && (
-              <Aviso variante="erro">Não encontramos nenhuma conta com esse e-mail.</Aviso>
             )}
 
             <p className="login-link" style={{ marginTop: 16 }}>

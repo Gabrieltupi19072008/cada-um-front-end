@@ -4,6 +4,7 @@ import RotaProtegida from './componentes/RotaProtegida'
 import Login from './paginas/Login'
 import Cadastro from './paginas/Cadastro'
 import EsqueciSenha from './paginas/EsqueciSenha'
+import RedefinirSenha from './paginas/RedefinirSenha'
 import PainelCandidato from './paginas/PainelCandidato'
 import CurriculoCandidato from './paginas/CurriculoCandidato'
 import VagasDisponiveis from './paginas/VagasDisponiveis'
@@ -39,6 +40,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+          <Route path="/redefinir-senha" element={<RedefinirSenha />} />
 
           <Route
             path="/candidato"
