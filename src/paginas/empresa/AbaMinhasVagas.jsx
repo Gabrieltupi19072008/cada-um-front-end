@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Ban } from 'lucide-react'
+import { Plus, Ban, Send } from 'lucide-react'
 import cliente from '../../api/cliente'
 import Botao from '../../componentes/Botao'
 import Selo from '../../componentes/Selo'
@@ -24,8 +24,24 @@ export default function AbaMinhasVagas() {
   }, [])
 
   async function encerrar(id) {
-    await cliente.delete(`/empresas/me/vagas/${id}`)
-    carregar()
+    setErro('')
+    try {
+      await cliente.delete(`/empresas/me/vagas/${id}`)
+      carregar()
+    } catch {
+      setErro('Não foi possível encerrar esta vaga')
+    }
+  }
+
+  async function publicar(vaga) {
+    setErro('')
+    try {
+      const { id, ...dados } = vaga
+      await cliente.put(`/empresas/me/vagas/${id}`, { ...dados, ativa: true })
+      carregar()
+    } catch (erroRequisicao) {
+      setErro(erroRequisicao.response?.data?.detail || 'Não foi possível publicar esta vaga')
+    }
   }
 
   return (
@@ -50,10 +66,14 @@ export default function AbaMinhasVagas() {
               </p>
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <Selo variante={vaga.ativa ? 'sucesso' : 'navy'}>{vaga.ativa ? 'Ativa' : 'Encerrada'}</Selo>
-              {vaga.ativa && (
+              <Selo variante={vaga.ativa ? 'sucesso' : 'navy'}>{vaga.ativa ? 'Ativa' : 'Inativa'}</Selo>
+              {vaga.ativa ? (
                 <Botao variante="contorno" icone={Ban} onClick={() => encerrar(vaga.id)}>
                   Encerrar
+                </Botao>
+              ) : (
+                <Botao variante="contorno" icone={Send} onClick={() => publicar(vaga)}>
+                  Publicar
                 </Botao>
               )}
             </div>
