@@ -97,22 +97,6 @@ export default function CurriculoVisaoEmpresa() {
             </div>
 
             <div className="secao-curriculo">
-              <h2>Formação</h2>
-              {candidato.formacoes.length === 0 && <p className="texto-suave">Nenhuma formação informada.</p>}
-              {candidato.formacoes.map((formacao) => (
-                <div className="item-curriculo" key={formacao.id}>
-                  <strong>
-                    {formacao.curso} — {formacao.instituicao}
-                  </strong>
-                  <p>
-                    {formacao.nivel} · {formacao.ano_inicio || '?'} -{' '}
-                    {formacao.em_andamento ? 'em andamento' : formacao.ano_conclusao || '?'}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="secao-curriculo">
               <h2>Experiência</h2>
               {candidato.experiencias.length === 0 && <p className="texto-suave">Nenhuma experiência informada.</p>}
               {candidato.experiencias.map((experiencia) => (
@@ -130,6 +114,12 @@ export default function CurriculoVisaoEmpresa() {
             <div className="secao-curriculo">
               <h2>Escolaridade e cursos</h2>
               <p>{candidato.escolaridade ? ROTULOS_ESCOLARIDADE[candidato.escolaridade] : 'Não informada.'}</p>
+              {(candidato.curso || candidato.instituicao_ensino) && (
+                <p>
+                  {candidato.curso || 'Curso não informado'}
+                  {candidato.instituicao_ensino ? ` — ${candidato.instituicao_ensino}` : ''}
+                </p>
+              )}
               {candidato.cursos_profissionalizantes && <p>{candidato.cursos_profissionalizantes}</p>}
             </div>
 

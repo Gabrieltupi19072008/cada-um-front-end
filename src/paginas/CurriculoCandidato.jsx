@@ -8,14 +8,12 @@ import Botao from '../componentes/Botao'
 import Aviso from '../componentes/Aviso'
 import cliente from '../api/cliente'
 import AbaDadosPessoais from './curriculo/AbaDadosPessoais'
-import AbaFormacao from './curriculo/AbaFormacao'
 import AbaExperiencia from './curriculo/AbaExperiencia'
 import AbaHabilidades from './curriculo/AbaHabilidades'
 import AbaTea from './curriculo/AbaTea'
 
 const ABAS = [
   { chave: 'dados', rotulo: 'Dados Pessoais' },
-  { chave: 'formacao', rotulo: 'Formação' },
   { chave: 'experiencia', rotulo: 'Experiência' },
   { chave: 'habilidades', rotulo: 'Habilidades' },
   { chave: 'tea', rotulo: 'TEA & Necessidades' },
@@ -110,9 +108,6 @@ export default function CurriculoCandidato() {
             aoMudancaPendente={marcarPendenciaDados}
           />
         </div>
-        <div style={{ display: abaAtiva === 'formacao' ? 'block' : 'none' }}>
-          <AbaFormacao perfil={perfil} aoAlterar={recarregar} />
-        </div>
         <div style={{ display: abaAtiva === 'experiencia' ? 'block' : 'none' }}>
           <AbaExperiencia perfil={perfil} aoAlterar={recarregar} />
         </div>
@@ -142,7 +137,7 @@ export default function CurriculoCandidato() {
         </div>
       </Cartao>
 
-      <Aviso variante="sucesso">Cada aba = uma seção do currículo (5 abas no total)</Aviso>
+      <Aviso variante="sucesso">Cada aba = uma seção do currículo (4 abas no total)</Aviso>
     </Layout>
   )
 }

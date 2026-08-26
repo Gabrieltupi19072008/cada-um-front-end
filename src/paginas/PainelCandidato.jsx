@@ -26,7 +26,7 @@ function calcularPercentualPerfil(perfil) {
     Boolean(perfil.telefone),
     Boolean(perfil.sobre_mim),
     Boolean(perfil.grau_tea),
-    perfil.formacoes.length > 0,
+    Boolean(perfil.curso || perfil.escolaridade),
     perfil.experiencias.length > 0,
     perfil.habilidades.length > 0,
   ]

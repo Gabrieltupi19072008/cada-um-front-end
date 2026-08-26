@@ -14,6 +14,8 @@ function estadoInicial(perfil) {
     linkedin: perfil.linkedin || '',
     sobre_mim: perfil.sobre_mim || '',
     escolaridade: perfil.escolaridade || '',
+    instituicao_ensino: perfil.instituicao_ensino || '',
+    curso: perfil.curso || '',
     cursos_profissionalizantes: perfil.cursos_profissionalizantes || '',
     bairros_aceitos: perfil.bairros_aceitos || '',
     tipos_vinculo: perfil.tipos_vinculo ? perfil.tipos_vinculo.split(',') : [],
@@ -162,6 +164,24 @@ export default function AbaDadosPessoais({ perfil, aoSalvar, aoMudancaPendente }
           <option value="pos_graduacao">Pós-graduação</option>
         </select>
       </label>
+      <div className="grade-campos">
+        <label className="campo">
+          Instituição de ensino
+          <input
+            value={dados.instituicao_ensino}
+            onChange={(e) => atualizar('instituicao_ensino', e.target.value)}
+            placeholder="Ex: UFRJ, SENAI, Colégio Estadual X"
+          />
+        </label>
+        <label className="campo">
+          Curso
+          <input
+            value={dados.curso}
+            onChange={(e) => atualizar('curso', e.target.value)}
+            placeholder="Ex: Direito, Técnico em Enfermagem"
+          />
+        </label>
+      </div>
       <label className="campo">
         Cursos profissionalizantes
         <textarea
