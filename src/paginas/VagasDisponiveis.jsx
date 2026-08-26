@@ -52,15 +52,36 @@ export default function VagasDisponiveis() {
       <div className="lista-candidatos">
         {vagas.map((vaga) => (
           <div key={vaga.id} className="linha-candidato">
-            <div>
-              <p className="linha-candidato__nome">
-                <Briefcase size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-                {vaga.titulo}
-              </p>
-              <p className="linha-candidato__info">
-                {vaga.empresa.razao_social || vaga.empresa.usuario.nome} · {vaga.cidade || 'Local não informado'} ·{' '}
-                {ROTULOS_MODALIDADE[vaga.modalidade]} · {ROTULOS_CONTRATO[vaga.tipo_contrato]}
-              </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              {vaga.empresa.usuario.foto_url && (
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    flex: 'none',
+                    backgroundImage: `url(${vaga.empresa.usuario.foto_url})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }}
+                />
+              )}
+              <div>
+                <p className="linha-candidato__nome">
+                  <Briefcase size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
+                  {vaga.titulo}
+                </p>
+                <p className="linha-candidato__info">
+                  <span
+                    onClick={() => navegar(`/candidato/empresas/${vaga.empresa.id}`)}
+                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                  >
+                    {vaga.empresa.razao_social || vaga.empresa.usuario.nome}
+                  </span>{' '}
+                  · {vaga.cidade || 'Local não informado'} · {ROTULOS_MODALIDADE[vaga.modalidade]} ·{' '}
+                  {ROTULOS_CONTRATO[vaga.tipo_contrato]}
+                </p>
+              </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <Selo variante="acento">{vaga.area || 'Geral'}</Selo>

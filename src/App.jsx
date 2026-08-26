@@ -12,6 +12,7 @@ import InteressesRecebidos from './paginas/InteressesRecebidos'
 import MinhasCandidaturas from './paginas/MinhasCandidaturas'
 import Privacidade from './paginas/Privacidade'
 import Orientacao from './paginas/Orientacao'
+import PerfilEmpresaVisaoCandidato from './paginas/PerfilEmpresaVisaoCandidato'
 import PainelEmpresa from './paginas/PainelEmpresa'
 import CurriculoVisaoEmpresa from './paginas/CurriculoVisaoEmpresa'
 import PublicarVaga from './paginas/PublicarVaga'
@@ -79,6 +80,14 @@ export default function App() {
             element={
               <RotaProtegida perfilExigido="candidato">
                 <MinhasCandidaturas />
+              </RotaProtegida>
+            }
+          />
+          <Route
+            path="/candidato/empresas/:empresaId"
+            element={
+              <RotaProtegida perfilExigido="candidato">
+                <PerfilEmpresaVisaoCandidato />
               </RotaProtegida>
             }
           />
