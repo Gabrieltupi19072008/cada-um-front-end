@@ -5,6 +5,7 @@ import Layout from '../componentes/Layout'
 import Cartao from '../componentes/Cartao'
 import Botao from '../componentes/Botao'
 import BarraProgresso from '../componentes/BarraProgresso'
+import SeletorFoto from '../componentes/SeletorFoto'
 import cliente from '../api/cliente'
 import { useAuth } from '../contexto/AuthContext'
 
@@ -12,11 +13,6 @@ const ROTULOS_GRAU_TEA = {
   leve: 'TEA Leve',
   moderado: 'TEA Moderado',
   severo: 'TEA Severo',
-}
-
-function obterIniciais(nome) {
-  const partes = nome.trim().split(/\s+/)
-  return partes.slice(0, 2).map((parte) => parte[0].toUpperCase()).join('')
 }
 
 function calcularPercentualPerfil(perfil) {
@@ -40,11 +36,15 @@ export default function PainelCandidato() {
   const { sair } = useAuth()
   const navegar = useNavigate()
 
-  useEffect(() => {
+  function carregar() {
     cliente
       .get('/candidatos/me')
       .then((resposta) => setPerfil(resposta.data))
       .catch(() => setErro('Não foi possível carregar seu perfil'))
+  }
+
+  useEffect(() => {
+    carregar()
   }, [])
 
   if (erro) {
@@ -84,7 +84,7 @@ export default function PainelCandidato() {
       >
         <div className="grade-dashboard-candidato">
           <div className="cartao-perfil-lateral">
-            <div className="avatar-circulo">{obterIniciais(perfil.usuario.nome)}</div>
+            <SeletorFoto fotoUrl={perfil.usuario.foto_url} nome={perfil.usuario.nome} aoAtualizar={carregar} />
             <p className="perfil-lateral__nome">{perfil.usuario.nome}</p>
             <p className="perfil-lateral__info">
               {perfil.grau_tea ? ROTULOS_GRAU_TEA[perfil.grau_tea] : 'Grau de TEA não informado'}

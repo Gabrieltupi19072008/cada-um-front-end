@@ -4,10 +4,12 @@ import Layout from '../componentes/Layout'
 import Cartao from '../componentes/Cartao'
 import Botao from '../componentes/Botao'
 import BarraProgresso from '../componentes/BarraProgresso'
+import SeletorFoto from '../componentes/SeletorFoto'
 import cliente from '../api/cliente'
 import { useAuth } from '../contexto/AuthContext'
 
 export default function PainelAdmin() {
+  const [meuUsuario, setMeuUsuario] = useState(null)
   const [estatisticas, setEstatisticas] = useState(null)
   const [pendentes, setPendentes] = useState([])
   const [cotas, setCotas] = useState([])
@@ -31,6 +33,10 @@ export default function PainelAdmin() {
     } finally {
       setConsultandoReceita((atual) => ({ ...atual, [empresaId]: false }))
     }
+  }
+
+  function carregarMeuUsuario() {
+    cliente.get('/usuarios/me').then((resposta) => setMeuUsuario(resposta.data))
   }
 
   async function carregarTudo() {
@@ -65,6 +71,7 @@ export default function PainelAdmin() {
 
   useEffect(() => {
     carregarTudo()
+    carregarMeuUsuario()
   }, [])
 
   async function aprovar(item) {
@@ -116,6 +123,11 @@ export default function PainelAdmin() {
           </button>
         }
       >
+        {meuUsuario && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+            <SeletorFoto fotoUrl={meuUsuario.foto_url} nome={meuUsuario.nome} aoAtualizar={carregarMeuUsuario} tamanho={64} />
+          </div>
+        )}
         <div className="grade-estatisticas">
           <div className="estatistica-cartao">
             <p className="estatistica-cartao__valor">{estatisticas.total_candidatos}</p>

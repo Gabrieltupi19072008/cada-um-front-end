@@ -3,6 +3,7 @@ import { Building2, Search, Folder, Bell, BarChart2, LogOut, UserCheck } from 'l
 import Layout from '../componentes/Layout'
 import Cartao from '../componentes/Cartao'
 import Abas from '../componentes/Abas'
+import SeletorFoto from '../componentes/SeletorFoto'
 import cliente from '../api/cliente'
 import { useAuth } from '../contexto/AuthContext'
 import AbaBuscarCandidatos from './empresa/AbaBuscarCandidatos'
@@ -25,11 +26,15 @@ export default function PainelEmpresa() {
   const [abaAtiva, setAbaAtiva] = useState('buscar')
   const { sair } = useAuth()
 
-  useEffect(() => {
+  function carregar() {
     cliente
       .get('/empresas/me')
       .then((resposta) => setPerfil(resposta.data))
       .catch(() => setErro('Não foi possível carregar seu perfil'))
+  }
+
+  useEffect(() => {
+    carregar()
   }, [])
 
   if (erro) {
@@ -69,6 +74,9 @@ export default function PainelEmpresa() {
             Sua empresa ainda está aguardando aprovação do administrador. Algumas ações ficam bloqueadas até lá.
           </p>
         )}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+          <SeletorFoto fotoUrl={perfil.usuario.foto_url} nome={perfil.usuario.nome} aoAtualizar={carregar} tamanho={64} />
+        </div>
         <Abas abas={ABAS} ativa={abaAtiva} aoMudar={setAbaAtiva} />
         {abaAtiva === 'buscar' && <AbaBuscarCandidatos />}
         {abaAtiva === 'vagas' && <AbaMinhasVagas />}

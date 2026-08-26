@@ -72,7 +72,24 @@ export default function CurriculoVisaoEmpresa() {
       <Cartao titulo={`Currículo — ${candidato.usuario.nome}`} icone={ClipboardList}>
         <div className="grade-curriculo">
           <div className="curriculo-lateral">
-            <div className="avatar-circulo">{obterIniciais(candidato.usuario.nome)}</div>
+            <div
+              className={candidato.usuario.foto_url ? '' : 'avatar-circulo'}
+              style={
+                candidato.usuario.foto_url
+                  ? {
+                      width: 84,
+                      height: 84,
+                      borderRadius: '50%',
+                      backgroundImage: `url(${candidato.usuario.foto_url})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      margin: '0 auto 12px',
+                    }
+                  : {}
+              }
+            >
+              {!candidato.usuario.foto_url && obterIniciais(candidato.usuario.nome)}
+            </div>
             <p className="perfil-lateral__nome">{candidato.usuario.nome}</p>
             <p className="perfil-lateral__info">
               {candidato.cidade}
