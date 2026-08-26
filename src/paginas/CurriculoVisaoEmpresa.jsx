@@ -118,6 +118,13 @@ export default function CurriculoVisaoEmpresa() {
                 <p>
                   {candidato.curso || 'Curso não informado'}
                   {candidato.instituicao_ensino ? ` — ${candidato.instituicao_ensino}` : ''}
+                  {candidato.curso_ano_inicio || candidato.curso_ano_conclusao ? (
+                    <>
+                      {' '}
+                      ({candidato.curso_ano_inicio || '?'} -{' '}
+                      {candidato.curso_em_andamento ? 'em andamento' : candidato.curso_ano_conclusao || '?'})
+                    </>
+                  ) : null}
                 </p>
               )}
               {candidato.cursos_profissionalizantes && <p>{candidato.cursos_profissionalizantes}</p>}

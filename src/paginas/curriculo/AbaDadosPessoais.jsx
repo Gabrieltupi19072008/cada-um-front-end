@@ -16,6 +16,9 @@ function estadoInicial(perfil) {
     escolaridade: perfil.escolaridade || '',
     instituicao_ensino: perfil.instituicao_ensino || '',
     curso: perfil.curso || '',
+    curso_ano_inicio: perfil.curso_ano_inicio || '',
+    curso_ano_conclusao: perfil.curso_ano_conclusao || '',
+    curso_em_andamento: perfil.curso_em_andamento || false,
     cursos_profissionalizantes: perfil.cursos_profissionalizantes || '',
     bairros_aceitos: perfil.bairros_aceitos || '',
     tipos_vinculo: perfil.tipos_vinculo ? perfil.tipos_vinculo.split(',') : [],
@@ -57,6 +60,8 @@ export default function AbaDadosPessoais({ perfil, aoSalvar, aoMudancaPendente }
       const corpo = { ...dados, tipos_vinculo: dados.tipos_vinculo.join(',') }
       corpo.escolaridade = corpo.escolaridade || null
       corpo.data_nascimento = corpo.data_nascimento || null
+      corpo.curso_ano_inicio = corpo.curso_ano_inicio ? Number(corpo.curso_ano_inicio) : null
+      corpo.curso_ano_conclusao = corpo.curso_em_andamento ? null : corpo.curso_ano_conclusao ? Number(corpo.curso_ano_conclusao) : null
       await cliente.put('/candidatos/me', corpo)
       setSalvo(dados)
       setSucesso(true)
@@ -181,7 +186,33 @@ export default function AbaDadosPessoais({ perfil, aoSalvar, aoMudancaPendente }
             placeholder="Ex: Direito, Técnico em Enfermagem"
           />
         </label>
+        <label className="campo">
+          Ano de início
+          <input
+            type="number"
+            value={dados.curso_ano_inicio}
+            onChange={(e) => atualizar('curso_ano_inicio', e.target.value)}
+          />
+        </label>
+        <label className="campo">
+          Ano de conclusão
+          <input
+            type="number"
+            value={dados.curso_ano_conclusao}
+            onChange={(e) => atualizar('curso_ano_conclusao', e.target.value)}
+            disabled={dados.curso_em_andamento}
+          />
+        </label>
       </div>
+      <label className="campo" style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <input
+          type="checkbox"
+          checked={dados.curso_em_andamento}
+          onChange={(e) => atualizar('curso_em_andamento', e.target.checked)}
+          style={{ width: 'auto' }}
+        />
+        Curso em andamento
+      </label>
       <label className="campo">
         Cursos profissionalizantes
         <textarea
