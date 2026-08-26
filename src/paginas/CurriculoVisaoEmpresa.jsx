@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, ClipboardList, Star, Check } from 'lucide-react'
+import { ArrowLeft, ClipboardList, Star, Check, Download, FileText } from 'lucide-react'
 import Layout from '../componentes/Layout'
 import Cartao from '../componentes/Cartao'
 import Botao from '../componentes/Botao'
@@ -31,6 +31,7 @@ export default function CurriculoVisaoEmpresa() {
   const [erro, setErro] = useState('')
   const [interesseEnviado, setInteresseEnviado] = useState(false)
   const [enviando, setEnviando] = useState(false)
+  const [baixando, setBaixando] = useState(false)
 
   useEffect(() => {
     cliente
@@ -48,6 +49,27 @@ export default function CurriculoVisaoEmpresa() {
       setErro(erroRequisicao.response?.data?.detail || 'Não foi possível enviar o interesse')
     } finally {
       setEnviando(false)
+    }
+  }
+
+  async function baixarCurriculo() {
+    setBaixando(true)
+    try {
+      const resposta = await cliente.get(`/empresas/candidatos/${candidatoId}/curriculo-arquivo`, {
+        responseType: 'blob',
+      })
+      const url = window.URL.createObjectURL(new Blob([resposta.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.download = candidato.curriculo_nome_arquivo || 'curriculo'
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+    } catch {
+      setErro('Não foi possível baixar o currículo')
+    } finally {
+      setBaixando(false)
     }
   }
 
@@ -108,6 +130,28 @@ export default function CurriculoVisaoEmpresa() {
           </div>
 
           <div>
+            {candidato.curriculo_nome_arquivo && (
+              <div className="secao-curriculo">
+                <h2>Currículo enviado</h2>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '10px 14px',
+                    border: '1px solid var(--borda, #e5e1d8)',
+                    borderRadius: 10,
+                  }}
+                >
+                  <FileText size={18} style={{ flex: 'none' }} />
+                  <span style={{ fontSize: 13, flex: 1 }}>{candidato.curriculo_nome_arquivo}</span>
+                  <Botao variante="contorno" icone={Download} onClick={baixarCurriculo} disabled={baixando}>
+                    {baixando ? 'Baixando...' : 'Baixar'}
+                  </Botao>
+                </div>
+              </div>
+            )}
+
             <div className="secao-curriculo">
               <h2>Objetivo Profissional</h2>
               <p>{candidato.sobre_mim || 'Não informado.'}</p>
