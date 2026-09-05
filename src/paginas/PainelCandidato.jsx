@@ -6,7 +6,6 @@ import Cartao from '../componentes/Cartao'
 import Botao from '../componentes/Botao'
 import BarraProgresso from '../componentes/BarraProgresso'
 import SeletorFoto from '../componentes/SeletorFoto'
-import UploadCurriculo from '../componentes/UploadCurriculo'
 import cliente from '../api/cliente'
 import { useAuth } from '../contexto/AuthContext'
 
@@ -105,22 +104,17 @@ export default function PainelCandidato() {
           </div>
 
           <div className="lista-funcionalidades">
-            <div className="cartao-funcionalidade" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
-              <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                <span className="cartao-funcionalidade__icone">
-                  <ClipboardList size={20} />
-                </span>
-                <div className="cartao-funcionalidade__texto">
-                  <strong>Meu Currículo</strong>
-                  <p>Complete seus dados, experiências e habilidades</p>
-                </div>
-                <Botao variante="contorno" onClick={() => navegar('/candidato/curriculo')}>
-                  Ver / Editar
-                </Botao>
+            <div className="cartao-funcionalidade">
+              <span className="cartao-funcionalidade__icone">
+                <ClipboardList size={20} />
+              </span>
+              <div className="cartao-funcionalidade__texto">
+                <strong>Meu Currículo</strong>
+                <p>Complete seus dados, experiências e habilidades</p>
               </div>
-              <div style={{ marginTop: 12 }}>
-                <UploadCurriculo nomeArquivo={perfil.curriculo_nome_arquivo} aoAtualizar={carregar} />
-              </div>
+              <Botao variante="contorno" onClick={() => navegar('/candidato/curriculo')}>
+                Ver / Editar
+              </Botao>
             </div>
 
             <div className="cartao-funcionalidade">

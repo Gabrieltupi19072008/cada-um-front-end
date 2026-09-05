@@ -3,6 +3,7 @@ import { Save } from 'lucide-react'
 import cliente from '../../api/cliente'
 import Botao from '../../componentes/Botao'
 import Aviso from '../../componentes/Aviso'
+import UploadCurriculo from '../../componentes/UploadCurriculo'
 import { ESTADOS_BRASIL } from '../../dados/estadosBrasil'
 
 function estadoInicial(perfil) {
@@ -230,6 +231,10 @@ export default function AbaDadosPessoais({ perfil, aoSalvar, aoMudancaPendente }
         />
         <span className="campo-dica">Texto livre — escreva os bairros que ficam bons pra você se deslocar.</span>
       </label>
+      <div className="campo" style={{ marginBottom: 16 }}>
+        Já tem um currículo pronto?
+        <UploadCurriculo nomeArquivo={perfil.curriculo_nome_arquivo} aoAtualizar={aoSalvar} />
+      </div>
       <Botao variante={sujo ? 'primario' : 'contorno'} icone={Save} onClick={salvar} disabled={salvando || !sujo}>
         {salvando ? 'Salvando...' : sujo ? 'Salvar rascunho' : 'Tudo salvo'}
       </Botao>
