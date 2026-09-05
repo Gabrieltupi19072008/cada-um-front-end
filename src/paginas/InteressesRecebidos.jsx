@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Check, X, MessageCircle, UserCheck } from 'lucide-react'
+import { ArrowLeft, X, MessageCircle, UserCheck } from 'lucide-react'
 import Layout from '../componentes/Layout'
 import Botao from '../componentes/Botao'
 import Selo from '../componentes/Selo'
@@ -92,17 +92,17 @@ export default function InteressesRecebidos() {
                     </>
                   )}
                   {interesse.status === 'selecionado' && (
-                    <>
-                      <Botao variante="sucesso" icone={Check} onClick={() => responder(interesse.id, 'aceito')}>
-                        Aceitar
-                      </Botao>
-                      <Botao variante="contorno" icone={X} onClick={() => responder(interesse.id, 'recusado')}>
-                        Recusar
-                      </Botao>
-                    </>
+                    <Botao variante="contorno" icone={X} onClick={() => responder(interesse.id, 'recusado')}>
+                      Recusar
+                    </Botao>
                   )}
                 </div>
               </div>
+              {interesse.status === 'selecionado' && (
+                <p className="texto-suave" style={{ marginTop: 4 }}>
+                  Vocês estão conversando. A decisão final de contratação é da empresa.
+                </p>
+              )}
               {conversaAberta === interesse.id && (
                 <Conversa interesseId={interesse.id} podeEnviar={interesse.status === 'selecionado'} />
               )}

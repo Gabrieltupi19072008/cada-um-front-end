@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { MessageCircle } from 'lucide-react'
+import { Check, X, MessageCircle } from 'lucide-react'
 import cliente from '../../api/cliente'
 import Selo from '../../componentes/Selo'
 import Botao from '../../componentes/Botao'
@@ -16,19 +16,35 @@ const ROTULOS_STATUS = {
 export default function AbaInteressesEnviados() {
   const [interesses, setInteresses] = useState([])
   const [erro, setErro] = useState('')
+  const [erroResposta, setErroResposta] = useState('')
   const [conversaAberta, setConversaAberta] = useState(null)
 
-  useEffect(() => {
+  function carregar() {
     cliente
       .get('/empresas/me/interesses')
       .then((resposta) => setInteresses(resposta.data))
       .catch(() => setErro('Não foi possível carregar os interesses'))
+  }
+
+  useEffect(() => {
+    carregar()
   }, [])
+
+  async function responder(id, status) {
+    setErroResposta('')
+    try {
+      await cliente.put(`/empresas/me/interesses/${id}`, { status })
+      carregar()
+    } catch (erroRequisicao) {
+      setErroResposta(erroRequisicao.response?.data?.detail || 'Não foi possível registrar sua resposta. Tente novamente.')
+    }
+  }
 
   return (
     <div>
       <h2 style={{ marginBottom: 16 }}>Interesses enviados</h2>
       {erro && <p className="aviso aviso--erro">{erro}</p>}
+      {erroResposta && <p className="aviso aviso--erro">{erroResposta}</p>}
       {interesses.length === 0 && !erro && (
         <p className="texto-suave">Você ainda não demonstrou interesse em nenhum candidato.</p>
       )}
@@ -54,6 +70,16 @@ export default function AbaInteressesEnviados() {
                     >
                       {conversaAberta === interesse.id ? 'Fechar conversa' : 'Conversar'}
                     </Botao>
+                  )}
+                  {interesse.status === 'selecionado' && (
+                    <>
+                      <Botao variante="sucesso" icone={Check} onClick={() => responder(interesse.id, 'aceito')}>
+                        Aceitar
+                      </Botao>
+                      <Botao variante="contorno" icone={X} onClick={() => responder(interesse.id, 'recusado')}>
+                        Recusar
+                      </Botao>
+                    </>
                   )}
                 </div>
               </div>
