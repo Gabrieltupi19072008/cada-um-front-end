@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Building2, Search, Folder, Bell, BarChart2, LogOut, UserCheck, ArrowLeft } from 'lucide-react'
+import { Building2, FileText, Search, Folder, Bell, BarChart2, LogOut, UserCheck, ArrowLeft } from 'lucide-react'
 import Layout from '../componentes/Layout'
 import Cartao from '../componentes/Cartao'
 import Botao from '../componentes/Botao'
 import SeletorFoto from '../componentes/SeletorFoto'
 import cliente from '../api/cliente'
 import { useAuth } from '../contexto/AuthContext'
+import AbaDescricao from './empresa/AbaDescricao'
 import AbaBuscarCandidatos from './empresa/AbaBuscarCandidatos'
 import AbaMinhasVagas from './empresa/AbaMinhasVagas'
 import AbaInteressesEnviados from './empresa/AbaInteressesEnviados'
@@ -13,6 +14,13 @@ import AbaCandidaturasRecebidas from './empresa/AbaCandidaturasRecebidas'
 import AbaRelatorioCota from './empresa/AbaRelatorioCota'
 
 const SECOES = [
+  {
+    chave: 'descricao',
+    rotulo: 'Sobre a Empresa',
+    descricao: 'Escreva um texto que o candidato vê ao clicar no nome da sua empresa',
+    icone: FileText,
+    Componente: AbaDescricao,
+  },
   {
     chave: 'buscar',
     rotulo: 'Buscar Candidatos',
