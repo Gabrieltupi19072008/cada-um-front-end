@@ -61,7 +61,12 @@ export default function InteressesRecebidos() {
               <div className="linha-candidato">
                 <div>
                   <p className="linha-candidato__nome">
-                    {interesse.empresa.razao_social || interesse.empresa.usuario.nome}
+                    <span
+                      onClick={() => navegar(`/candidato/empresas/${interesse.empresa.id}`)}
+                      style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                    >
+                      {interesse.empresa.razao_social || interesse.empresa.usuario.nome}
+                    </span>
                   </p>
                   <p className="linha-candidato__info">
                     {interesse.vaga ? `Vaga: ${interesse.vaga.titulo}` : 'Contato direto'}

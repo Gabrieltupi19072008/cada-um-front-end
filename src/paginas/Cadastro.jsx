@@ -17,17 +17,19 @@ const ROTULOS_CADASTRO = {
   cnpj: 'CNPJ',
   razao_social: 'Razão social',
   setor: 'Setor',
+  site: 'Site da empresa',
 }
 
 const CAMPOS_POR_TIPO = {
   candidato: ['cpf', 'cidade', 'estado', 'telefone'],
-  empresa: ['cnpj', 'razao_social', 'setor', 'cidade', 'estado'],
+  empresa: ['cnpj', 'razao_social', 'setor', 'cidade', 'estado', 'site'],
 }
 
 export default function Cadastro() {
   const navegar = useNavigate()
   const [tipoCadastro, setTipoCadastro] = useState('candidato')
   const [dados, setDados] = useState({ nome: '', email: '', senha: '' })
+  const [semSite, setSemSite] = useState(false)
   const [erro, setErro] = useState('')
   const [sucesso, setSucesso] = useState(false)
   const [carregando, setCarregando] = useState(false)
@@ -124,6 +126,30 @@ export default function Cadastro() {
                         </option>
                       ))}
                     </select>
+                  ) : campo === 'site' ? (
+                    <>
+                      <input
+                        value={dados.site || ''}
+                        onChange={(e) => atualizar('site', e.target.value)}
+                        placeholder="https://suaempresa.com.br"
+                        disabled={semSite}
+                      />
+                      <span
+                        className="check-pill"
+                        style={{ marginTop: 6, display: 'inline-flex', width: 'fit-content' }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={semSite}
+                          onChange={(e) => {
+                            const marcado = e.target.checked
+                            setSemSite(marcado)
+                            if (marcado) atualizar('site', '')
+                          }}
+                        />
+                        Não tenho site
+                      </span>
+                    </>
                   ) : (
                     <input value={dados[campo] || ''} onChange={(e) => atualizar(campo, e.target.value)} />
                   )}

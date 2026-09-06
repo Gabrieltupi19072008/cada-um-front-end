@@ -52,7 +52,12 @@ export default function MinhasCandidaturas() {
                     {candidatura.vaga ? candidatura.vaga.titulo : 'Vaga'}
                   </p>
                   <p className="linha-candidato__info">
-                    {candidatura.empresa.razao_social || candidatura.empresa.usuario.nome}
+                    <span
+                      onClick={() => navegar(`/candidato/empresas/${candidatura.empresa.id}`)}
+                      style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                    >
+                      {candidatura.empresa.razao_social || candidatura.empresa.usuario.nome}
+                    </span>
                   </p>
                 </div>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
