@@ -23,7 +23,7 @@ export const CONTEUDO_ORIENTACAO = [
     categoria: 'Lei de Cotas',
     titulo: 'Lei de Cotas explicada de um jeito simples',
     descricao: 'O que é e quem ela protege.',
-    url: '',
+    url: 'https://www.youtube.com/watch?v=I0XLkJye_Y0',
   },
   {
     categoria: 'Adaptações',
