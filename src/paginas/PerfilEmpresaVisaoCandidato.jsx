@@ -76,17 +76,22 @@ export default function PerfilEmpresaVisaoCandidato() {
               {empresa.estado ? ` - ${empresa.estado}` : ''}
             </p>
             {empresa.setor && <p className="perfil-lateral__info">{empresa.setor}</p>}
-            {empresa.site && (
-              <a href={empresa.site} target="_blank" rel="noreferrer" style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 4, marginTop: 8 }}>
-                <Globe size={13} /> Site
-              </a>
-            )}
           </div>
 
           <div>
             <div className="secao-curriculo">
               <h2>Sobre a empresa</h2>
               <p>{empresa.descricao || 'Não informado.'}</p>
+              {empresa.site && (
+                <a
+                  href={empresa.site}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 4, marginTop: 12 }}
+                >
+                  <Globe size={13} /> Site
+                </a>
+              )}
             </div>
           </div>
         </div>
