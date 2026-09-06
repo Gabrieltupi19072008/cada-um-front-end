@@ -11,7 +11,7 @@ export const CONTEUDO_ORIENTACAO = [
     categoria: 'Currículo',
     titulo: 'Como montar um currículo simples',
     descricao: 'Passo a passo, sem enrolação.',
-    url: '',
+    url: 'https://www.youtube.com/watch?v=cHFqdmmv2Is',
   },
   {
     categoria: 'Direitos',
