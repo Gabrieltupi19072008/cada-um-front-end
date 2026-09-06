@@ -5,7 +5,7 @@ export const CONTEUDO_ORIENTACAO = [
     categoria: 'Entrevista',
     titulo: 'Dicas para uma boa entrevista',
     descricao: 'Como se preparar e o que levar no dia.',
-    url: '',
+    url: 'https://www.youtube.com/watch?v=Jo_G4Ca_UYc',
   },
   {
     categoria: 'Currículo',
