@@ -17,7 +17,7 @@ export const CONTEUDO_ORIENTACAO = [
     categoria: 'Direitos',
     titulo: 'Seus direitos como pessoa com deficiência',
     descricao: 'O que a lei garante no ambiente de trabalho.',
-    url: '',
+    url: 'https://www.youtube.com/watch?v=W1x0FaQztEI',
   },
   {
     categoria: 'Lei de Cotas',
@@ -35,6 +35,6 @@ export const CONTEUDO_ORIENTACAO = [
     categoria: 'Primeiro emprego',
     titulo: 'Preparando-se para o primeiro emprego',
     descricao: 'O que esperar da primeira semana.',
-    url: '',
+    url: 'https://www.youtube.com/watch?v=ykAPpmZRpcg',
   },
 ]
