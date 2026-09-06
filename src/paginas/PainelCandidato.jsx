@@ -169,20 +169,18 @@ export default function PainelCandidato() {
               </Botao>
             </div>
 
-            {(perfil.tipos_vinculo || '').split(',').some((t) => t === 'estagio' || t === 'menor_aprendiz') && (
-              <div className="cartao-funcionalidade">
-                <span className="cartao-funcionalidade__icone">
-                  <GraduationCap size={20} />
-                </span>
-                <div className="cartao-funcionalidade__texto">
-                  <strong>Orientação</strong>
-                  <p>Dicas de currículo, entrevista e seus direitos</p>
-                </div>
-                <Botao variante="contorno" onClick={() => navegar('/candidato/orientacao')}>
-                  Ver conteúdos
-                </Botao>
+            <div className="cartao-funcionalidade">
+              <span className="cartao-funcionalidade__icone">
+                <GraduationCap size={20} />
+              </span>
+              <div className="cartao-funcionalidade__texto">
+                <strong>Orientação</strong>
+                <p>Dicas de currículo, entrevista e seus direitos</p>
               </div>
-            )}
+              <Botao variante="contorno" onClick={() => navegar('/candidato/orientacao')}>
+                Ver conteúdos
+              </Botao>
+            </div>
           </div>
         </div>
       </Cartao>
