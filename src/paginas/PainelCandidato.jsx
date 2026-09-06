@@ -106,6 +106,19 @@ export default function PainelCandidato() {
           <div className="lista-funcionalidades">
             <div className="cartao-funcionalidade">
               <span className="cartao-funcionalidade__icone">
+                <GraduationCap size={20} />
+              </span>
+              <div className="cartao-funcionalidade__texto">
+                <strong>Orientação</strong>
+                <p>Dicas de currículo, entrevista e seus direitos</p>
+              </div>
+              <Botao variante="contorno" onClick={() => navegar('/candidato/orientacao')}>
+                Ver conteúdos
+              </Botao>
+            </div>
+
+            <div className="cartao-funcionalidade">
+              <span className="cartao-funcionalidade__icone">
                 <ClipboardList size={20} />
               </span>
               <div className="cartao-funcionalidade__texto">
@@ -166,19 +179,6 @@ export default function PainelCandidato() {
               </div>
               <Botao variante="contorno" onClick={() => navegar('/candidato/privacidade')}>
                 Gerenciar
-              </Botao>
-            </div>
-
-            <div className="cartao-funcionalidade">
-              <span className="cartao-funcionalidade__icone">
-                <GraduationCap size={20} />
-              </span>
-              <div className="cartao-funcionalidade__texto">
-                <strong>Orientação</strong>
-                <p>Dicas de currículo, entrevista e seus direitos</p>
-              </div>
-              <Botao variante="contorno" onClick={() => navegar('/candidato/orientacao')}>
-                Ver conteúdos
               </Botao>
             </div>
           </div>
