@@ -5,10 +5,10 @@ import Botao from '../../componentes/Botao'
 import Aviso from '../../componentes/Aviso'
 
 export default function AbaTea({ perfil, aoSalvar, aoMudancaPendente }) {
-  const [grauTea, setGrauTea] = useState(perfil.grau_tea || 'leve')
+  const [grauTea, setGrauTea] = useState(perfil.grau_tea || '')
   const [necessidades, setNecessidades] = useState(perfil.necessidades_especiais || '')
   const [salvo, setSalvo] = useState({
-    grau_tea: perfil.grau_tea || 'leve',
+    grau_tea: perfil.grau_tea || '',
     necessidades_especiais: perfil.necessidades_especiais || '',
   })
   const [salvando, setSalvando] = useState(false)
@@ -25,7 +25,7 @@ export default function AbaTea({ perfil, aoSalvar, aoMudancaPendente }) {
     setSalvando(true)
     try {
       await cliente.put('/candidatos/me', {
-        grau_tea: grauTea,
+        grau_tea: grauTea || null,
         necessidades_especiais: necessidades,
       })
       setSalvo({ grau_tea: grauTea, necessidades_especiais: necessidades })
@@ -52,6 +52,7 @@ export default function AbaTea({ perfil, aoSalvar, aoMudancaPendente }) {
             setErro('')
           }}
         >
+          <option value="">Não tenho TEA</option>
           <option value="leve">Leve</option>
           <option value="moderado">Moderado</option>
           <option value="severo">Severo</option>
@@ -66,7 +67,7 @@ export default function AbaTea({ perfil, aoSalvar, aoMudancaPendente }) {
             setSucesso(false)
             setErro('')
           }}
-          placeholder="Ex: Prefere ambiente calmo, precisa de instruções escritas..."
+          placeholder="Ex: Cadeirante e precisa de rampa, sensível a barulho, baixa visão e precisa de tela adaptada..."
         />
       </label>
       <Botao variante={sujo ? 'primario' : 'contorno'} icone={Save} onClick={salvar} disabled={salvando || !sujo}>
