@@ -224,21 +224,33 @@ export default function PainelAdmin() {
 
           <div>
             <h2 style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <BarChart2 size={16} /> Cota TEA por Empresa
+              <BarChart2 size={16} /> Cota PcD por Empresa (Lei nº 8.213/91)
             </h2>
             {cotas.length === 0 && <p className="texto-suave">Nenhuma empresa aprovada ainda.</p>}
-            {cotas.map((cota) => (
-              <div key={cota.empresa_id} className="linha-cota">
-                <div className="linha-cota__topo">
-                  <span>{cota.razao_social}</span>
-                  <strong>{cota.percentual}%</strong>
+            {cotas.map((cota) =>
+              cota.vagas_necessarias === 0 ? (
+                <div key={cota.empresa_id} className="linha-cota">
+                  <div className="linha-cota__topo">
+                    <span>{cota.razao_social}</span>
+                    <span className="texto-suave">Isenta (menos de 100 funcionários ou não informado)</span>
+                  </div>
                 </div>
-                <BarraProgresso
-                  valor={cota.percentual}
-                  cor={cota.percentual >= 80 ? 'sucesso' : cota.percentual >= 50 ? 'acento' : 'alerta'}
-                />
-              </div>
-            ))}
+              ) : (
+                <div key={cota.empresa_id} className="linha-cota">
+                  <div className="linha-cota__topo">
+                    <span>
+                      {cota.razao_social} — {cota.aceitos}/{cota.vagas_necessarias} vagas ({cota.percentual_legal}%
+                      exigido, {cota.total_funcionarios} funcionários)
+                    </span>
+                    <strong>{cota.percentual_cumprido}%</strong>
+                  </div>
+                  <BarraProgresso
+                    valor={cota.percentual_cumprido}
+                    cor={cota.percentual_cumprido >= 80 ? 'sucesso' : cota.percentual_cumprido >= 50 ? 'acento' : 'alerta'}
+                  />
+                </div>
+              )
+            )}
           </div>
         </div>
 
