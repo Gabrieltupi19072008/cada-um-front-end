@@ -17,13 +17,13 @@ export const CONTEUDO_ORIENTACAO = [
     categoria: 'Direitos',
     titulo: 'Seus direitos como pessoa com deficiência',
     descricao: 'O que a lei garante no ambiente de trabalho.',
-    url: 'https://www.youtube.com/watch?v=W1x0FaQztEI',
+    url: 'https://www.youtube.com/watch?v=FJz-byQ5XVQ',
   },
   {
     categoria: 'Lei de Cotas',
     titulo: 'Lei de Cotas explicada de um jeito simples',
     descricao: 'O que é e quem ela protege.',
-    url: 'https://www.youtube.com/watch?v=I0XLkJye_Y0',
+    url: 'https://www.youtube.com/watch?v=zYGbEiuNyi4',
   },
   {
     categoria: 'Primeiro emprego',
