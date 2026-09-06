@@ -26,12 +26,6 @@ export const CONTEUDO_ORIENTACAO = [
     url: 'https://www.youtube.com/watch?v=I0XLkJye_Y0',
   },
   {
-    categoria: 'Adaptações',
-    titulo: 'Adaptações razoáveis: o que pedir',
-    descricao: 'Exemplos práticos de pedidos comuns.',
-    url: '',
-  },
-  {
     categoria: 'Primeiro emprego',
     titulo: 'Preparando-se para o primeiro emprego',
     descricao: 'O que esperar da primeira semana.',
