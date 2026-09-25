@@ -23,18 +23,9 @@ export default function LayoutPublico({ children }) {
             Um lugar para <span>cada um.</span>
           </h1>
           <p>
-            O cuidado e a tecnologia que você já conhece, agora conectando pessoas autistas a empresas que
+            O cuidado e a tecnologia que você já conhece, agora conectando pessoas PcDs a empresas que
             valorizam diferentes formas de pensar.
           </p>
-          <div className="ecossistema">
-            <span>Também no ecossistema:</span>
-            <b>Identificação digital</b>
-            <i />
-            <b>QR Code</b>
-            <i />
-            <b>Apoio em emergências</b>
-          </div>
-
           <div className="cartao-flutuante cartao-flutuante--a">
             <span>
               <Briefcase size={20} />

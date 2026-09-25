@@ -143,28 +143,6 @@
   line-height: 1.75;
 }
 
-.ecossistema {
-  margin-top: 30px;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 9px;
-  color: #8b8792;
-  font-size: 12px;
-}
-
-.ecossistema b {
-  color: #5f2887;
-  font-weight: 700;
-}
-
-.ecossistema i {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #d6db55;
-}
-
 .cartao-flutuante {
   position: absolute;
   display: flex;
