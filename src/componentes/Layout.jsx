@@ -40,8 +40,8 @@ const MENUS = {
   ],
   empresa: [
     { rotulo: 'Início', icone: Home, para: '/empresa' },
-    { rotulo: 'Sobre a empresa', icone: Building2, para: '/empresa?secao=descricao' },
-    { rotulo: 'Buscar candidatos', icone: Search, para: '/empresa?secao=buscar', ativoEm: ['/empresa/candidatos'] },
+    { rotulo: 'Perfil da empresa', icone: Building2, para: '/empresa?secao=descricao' },
+    { rotulo: 'Buscar talentos', icone: Search, para: '/empresa?secao=buscar', ativoEm: ['/empresa/candidatos'] },
     { rotulo: 'Minhas vagas', icone: Briefcase, para: '/empresa?secao=vagas', ativoEm: ['/empresa/vagas'] },
     { rotulo: 'Interesses enviados', icone: Mail, para: '/empresa?secao=interesses' },
     { rotulo: 'Candidaturas', icone: UserCheck, para: '/empresa?secao=candidaturas', contador: true },

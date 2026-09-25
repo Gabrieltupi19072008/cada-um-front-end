@@ -924,19 +924,388 @@
   place-items: center;
 }
 
-.foto-empresa {
-  display: flex;
-  align-items: center;
-  gap: 20px;
+/* ---------- Perfil da empresa ---------- */
+
+.perfil-empresa {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 18px;
+  align-items: start;
 }
 
-.foto-empresa b {
+.perfil-empresa > .painel {
+  margin-bottom: 0;
+}
+
+.painel.perfil-empresa__capa {
+  padding: 0;
+  overflow: hidden;
+  position: sticky;
+  top: 94px;
+}
+
+.perfil-empresa__fundo {
+  height: 120px;
+  background: linear-gradient(135deg, var(--acento), color-mix(in srgb, var(--acento) 55%, #fff));
+}
+
+.perfil-empresa__foto {
+  margin: -40px 0 0 22px;
+  width: fit-content;
+  padding: 4px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 6px 18px rgba(60, 45, 90, 0.15);
+}
+
+.perfil-empresa__info {
+  padding: 14px 22px 22px;
+}
+
+.perfil-empresa__info h2 {
+  font-family: var(--display);
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.perfil-empresa__info p {
+  font-size: 13px;
+  color: #6f6a78;
+  margin-bottom: 12px;
+}
+
+.perfil-empresa__selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.perfil-empresa__selos i {
+  font-style: normal;
+  background: var(--acento-claro);
+  color: var(--acento);
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.perfil-empresa__selos i.pendente {
+  background: var(--alerta-claro);
+  color: #8a5a00;
+}
+
+.grade-formulario {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+}
+
+.campo--largo {
+  grid-column: 1 / -1;
+}
+
+.campo input:disabled {
+  background: #f5f3f8;
+  color: #6f6a78;
+}
+
+.nota-inclusao {
+  display: flex;
+  gap: 10px;
+  background: var(--sucesso-claro);
+  color: #2f7d3b;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 4px;
+}
+
+.nota-inclusao svg {
+  flex: none;
+}
+
+.nota-inclusao b {
+  font-size: 13px;
+}
+
+.nota-inclusao p {
+  font-size: 13px;
+  color: #4d5a50;
+  margin-top: 2px;
+  line-height: 1.5;
+}
+
+.rodape-formulario {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* ---------- Buscar talentos ---------- */
+
+.barra-busca {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  padding: 6px 6px 6px 18px;
+  color: #8a8492;
+}
+
+.barra-busca:focus-within {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px var(--acento-claro);
+}
+
+.barra-busca input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  font-size: 15px;
+  color: var(--titulo);
+  background: transparent;
+}
+
+.barra-busca button {
+  height: 46px;
+  border: 0;
+  background: var(--acento);
+  color: #fff;
+  border-radius: 10px;
+  padding: 0 22px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.filtros-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 18px;
+}
+
+.filtros-chips button {
+  border: 1px solid #ddd8e3;
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 15px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5f5a66;
+}
+
+.filtros-chips button.ativo {
+  background: var(--acento-claro);
+  color: var(--acento);
+  border-color: var(--acento);
+}
+
+.filtros-chips select {
+  margin-left: auto;
+  border: 1px solid #ddd8e3;
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5f5a66;
+}
+
+.layout-talentos {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.lista-talentos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cartao-talento {
+  border: 1px solid #e5e1e8;
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  text-align: left;
+  transition: 0.15s;
+}
+
+.cartao-talento:hover {
+  border-color: color-mix(in srgb, var(--acento) 40%, #e5e1e8);
+}
+
+.cartao-talento.selecionado {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px var(--acento-claro);
+}
+
+.cartao-talento > div {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cartao-talento b {
+  font-size: 15px;
   color: var(--titulo);
 }
 
-.foto-empresa p {
+.cartao-talento p {
   font-size: 13px;
-  color: var(--texto-suave);
+  color: #6f6a78;
+}
+
+.cartao-talento small {
+  font-size: 12px;
+  color: #8a8492;
+}
+
+.cartao-talento__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.cartao-talento__chips i {
+  font-style: normal;
+  font-size: 11px;
+  color: #5f5a66;
+  background: #f3f1f5;
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+
+.cartao-talento__grau {
+  flex: none;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--acento);
+  background: var(--acento-claro);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.detalhe-talento {
+  background: #fff;
+  border: 1px solid #e5e1e8;
+  border-radius: 17px;
+  padding: 24px;
+  position: sticky;
+  top: 94px;
+}
+
+.detalhe-talento__topo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
+.detalhe-talento__topo .avatar-conversa {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  font-size: 16px;
+}
+
+.detalhe-talento__topo h2 {
+  font-family: var(--display);
+  font-size: 20px;
+}
+
+.detalhe-talento__topo p {
+  font-size: 13px;
+  color: #6f6a78;
+}
+
+.detalhe-talento__topo small {
+  font-size: 12px;
+  color: #8a8492;
+}
+
+.detalhe-talento h3 {
+  font-size: 13px;
+  margin: 18px 0 8px;
+}
+
+.detalhe-talento__texto {
+  font-size: 13px;
+  color: #6f6a78;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.lista-habilidades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lista-habilidades span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid color-mix(in srgb, var(--acento) 35%, #ddd);
+  border-radius: 20px;
+  padding: 6px 11px;
+  color: var(--acento);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.lista-habilidades b {
+  font-size: 11px;
+  background: var(--acento-claro);
+  padding: 2px 7px;
+  border-radius: 8px;
+}
+
+.detalhe-talento__acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.detalhe-talento .aviso {
+  margin: 16px 0 0;
+}
+
+@media (max-width: 1100px) {
+  .perfil-empresa,
+  .layout-talentos {
+    grid-template-columns: 1fr;
+  }
+  .perfil-empresa__capa,
+  .detalhe-talento {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .grade-formulario {
+    grid-template-columns: 1fr;
+  }
+  .filtros-chips select {
+    margin-left: 0;
+  }
+  .barra-busca button {
+    padding: 0 14px;
+  }
 }
 
 /* ---------- Cabeçalhos de página ---------- */

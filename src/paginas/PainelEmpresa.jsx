@@ -5,9 +5,7 @@ import Layout from '../componentes/Layout'
 import CabecalhoPagina from '../componentes/CabecalhoPagina'
 import Destaque, { Atalho, IconeDestaque } from '../componentes/Destaque'
 import Selo from '../componentes/Selo'
-import SeletorFoto from '../componentes/SeletorFoto'
 import cliente from '../api/cliente'
-import { useAuth } from '../contexto/AuthContext'
 import AbaDescricao from './empresa/AbaDescricao'
 import AbaBuscarCandidatos from './empresa/AbaBuscarCandidatos'
 import AbaMinhasVagas from './empresa/AbaMinhasVagas'
@@ -18,17 +16,19 @@ import AbaRelatorioCota from './empresa/AbaRelatorioCota'
 const SECOES = [
   {
     chave: 'descricao',
-    sobretitulo: 'PERFIL DA EMPRESA',
-    rotulo: 'Sobre a empresa',
-    descricao: 'Escreva um texto que o candidato vê ao clicar no nome da sua empresa.',
+    sobretitulo: 'CONFIGURAÇÕES DA EMPRESA',
+    rotulo: 'Perfil da empresa',
+    descricao: 'Mantenha suas informações atualizadas para atrair os melhores talentos.',
     Componente: AbaDescricao,
+    semPainel: true,
   },
   {
     chave: 'buscar',
     sobretitulo: 'TALENTOS',
-    rotulo: 'Buscar candidatos',
-    descricao: 'Encontre candidatos pelo perfil, cidade e habilidades.',
+    rotulo: 'Buscar talentos',
+    descricao: 'Encontre candidatos que combinam com os valores e necessidades da sua empresa.',
     Componente: AbaBuscarCandidatos,
+    semPainel: true,
   },
   {
     chave: 'vagas',
@@ -70,7 +70,6 @@ export default function PainelEmpresa() {
   const [cota, setCota] = useState(null)
   const [erro, setErro] = useState('')
   const [parametros] = useSearchParams()
-  const { recarregarUsuario } = useAuth()
 
   const secao = SECOES.find((item) => item.chave === parametros.get('secao'))
 
@@ -113,26 +112,13 @@ export default function PainelEmpresa() {
     return (
       <Layout tema="empresa" largura="largo">
         <CabecalhoPagina sobretitulo={secao.sobretitulo} titulo={secao.rotulo} descricao={secao.descricao} />
-        {secao.chave === 'descricao' && (
-          <section className="painel foto-empresa">
-            <SeletorFoto
-              fotoUrl={perfil.usuario.foto_url}
-              nome={perfil.usuario.nome}
-              aoAtualizar={() => {
-                carregar()
-                recarregarUsuario()
-              }}
-              tamanho={72}
-            />
-            <div>
-              <b>Logo ou foto da empresa</b>
-              <p>Aparece para os candidatos junto com o nome da empresa.</p>
-            </div>
+        {secao.semPainel ? (
+          <secao.Componente />
+        ) : (
+          <section className="painel">
+            <secao.Componente />
           </section>
         )}
-        <section className="painel">
-          <secao.Componente />
-        </section>
       </Layout>
     )
   }
