@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Check, X, MessageCircle, UserCheck } from 'lucide-react'
+import { Check, FileText, X, UserCheck } from 'lucide-react'
 import cliente from '../../api/cliente'
-import Selo from '../../componentes/Selo'
 import Botao from '../../componentes/Botao'
 import Conversa from '../../componentes/Conversa'
+import CaixaConversas, { CabecalhoConversa } from '../../componentes/CaixaConversas'
 
 const ROTULOS_STATUS = {
   pendente: { texto: 'Novo', variante: 'sucesso' },
@@ -18,13 +18,16 @@ export default function AbaCandidaturasRecebidas() {
   const [candidaturas, setCandidaturas] = useState([])
   const [erro, setErro] = useState('')
   const [erroResposta, setErroResposta] = useState('')
-  const [conversaAberta, setConversaAberta] = useState(null)
+  const [selecionadoId, setSelecionadoId] = useState(null)
   const navegar = useNavigate()
 
   function carregar() {
     cliente
       .get('/empresas/me/candidaturas')
-      .then((resposta) => setCandidaturas(resposta.data))
+      .then((resposta) => {
+        setCandidaturas(resposta.data)
+        setSelecionadoId((atual) => atual ?? resposta.data[0]?.id ?? null)
+      })
       .catch(() => setErro('Não foi possível carregar as candidaturas'))
   }
 
@@ -42,72 +45,78 @@ export default function AbaCandidaturasRecebidas() {
     }
   }
 
+  const selecionada = candidaturas.find((candidatura) => candidatura.id === selecionadoId)
+
   return (
     <div>
-      <h2 style={{ marginBottom: 16 }}>Candidaturas recebidas</h2>
       {erro && <p className="aviso aviso--erro">{erro}</p>}
       {erroResposta && <p className="aviso aviso--erro">{erroResposta}</p>}
       {candidaturas.length === 0 && !erro && (
         <p className="texto-suave">Ninguém se candidatou diretamente às suas vagas ainda.</p>
       )}
-      <div className="lista-candidatos">
-        {candidaturas.map((candidatura) => {
-          const podeConversar = ['selecionado', 'aceito', 'recusado'].includes(candidatura.status)
-          return (
-            <div key={candidatura.id} style={{ marginBottom: 8 }}>
-              <div className="linha-candidato">
-                <div>
-                  <p className="linha-candidato__nome">{candidatura.candidato.usuario.nome}</p>
-                  <p className="linha-candidato__info">
-                    {candidatura.vaga ? `Vaga: ${candidatura.vaga.titulo}` : 'Candidatura direta pela vaga'}
-                    {candidatura.mensagem ? ` — "${candidatura.mensagem}"` : ''}
-                  </p>
-                </div>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                  <Selo variante={ROTULOS_STATUS[candidatura.status].variante}>
-                    {ROTULOS_STATUS[candidatura.status].texto}
-                  </Selo>
-                  <Botao variante="contorno" onClick={() => navegar(`/empresa/candidatos/${candidatura.candidato.id}`)}>
-                    Ver currículo
-                  </Botao>
-                  {podeConversar && (
+
+      {candidaturas.length > 0 && (
+        <CaixaConversas
+          itens={candidaturas.map((candidatura) => ({
+            id: candidatura.id,
+            nome: candidatura.candidato.usuario.nome,
+            fotoUrl: candidatura.candidato.usuario.foto_url,
+            resumo: candidatura.vaga ? candidatura.vaga.titulo : 'Candidatura direta',
+            selo: ROTULOS_STATUS[candidatura.status],
+          }))}
+          selecionadoId={selecionadoId}
+          aoSelecionar={setSelecionadoId}
+        >
+          {selecionada && (
+            <>
+              <CabecalhoConversa
+                nome={selecionada.candidato.usuario.nome}
+                fotoUrl={selecionada.candidato.usuario.foto_url}
+                subtitulo={selecionada.vaga ? `Vaga: ${selecionada.vaga.titulo}` : 'Candidatura direta'}
+                selo={ROTULOS_STATUS[selecionada.status]}
+                acoes={
+                  <>
                     <Botao
                       variante="contorno"
-                      icone={MessageCircle}
-                      onClick={() => setConversaAberta((atual) => (atual === candidatura.id ? null : candidatura.id))}
+                      icone={FileText}
+                      onClick={() => navegar(`/empresa/candidatos/${selecionada.candidato.id}`)}
                     >
-                      {conversaAberta === candidatura.id ? 'Fechar conversa' : 'Conversar'}
+                      Ver currículo
                     </Botao>
-                  )}
-                  {(candidatura.status === 'pendente' || candidatura.status === 'visualizado') && (
-                    <>
-                      <Botao variante="sucesso" icone={UserCheck} onClick={() => responder(candidatura.id, 'selecionado')}>
-                        Selecionar
-                      </Botao>
-                      <Botao variante="contorno" icone={X} onClick={() => responder(candidatura.id, 'recusado')}>
-                        Recusar
-                      </Botao>
-                    </>
-                  )}
-                  {candidatura.status === 'selecionado' && (
-                    <>
-                      <Botao variante="sucesso" icone={Check} onClick={() => responder(candidatura.id, 'aceito')}>
-                        Aceitar
-                      </Botao>
-                      <Botao variante="contorno" icone={X} onClick={() => responder(candidatura.id, 'recusado')}>
-                        Recusar
-                      </Botao>
-                    </>
-                  )}
+                    {selecionada.status === 'selecionado' && (
+                      <>
+                        <Botao variante="sucesso" icone={Check} onClick={() => responder(selecionada.id, 'aceito')}>
+                          Aceitar
+                        </Botao>
+                        <Botao variante="contorno" icone={X} onClick={() => responder(selecionada.id, 'recusado')}>
+                          Recusar
+                        </Botao>
+                      </>
+                    )}
+                  </>
+                }
+              />
+              {selecionada.status === 'pendente' || selecionada.status === 'visualizado' ? (
+                <div className="conversa-convite">
+                  <b>{selecionada.candidato.usuario.nome} se candidatou!</b>
+                  {selecionada.mensagem && <p>“{selecionada.mensagem}”</p>}
+                  <p>Selecione o candidato para liberar a conversa e combinar os próximos passos.</p>
+                  <div>
+                    <Botao variante="primario" icone={UserCheck} onClick={() => responder(selecionada.id, 'selecionado')}>
+                      Selecionar e conversar
+                    </Botao>
+                    <Botao variante="contorno" icone={X} onClick={() => responder(selecionada.id, 'recusado')}>
+                      Recusar
+                    </Botao>
+                  </div>
                 </div>
-              </div>
-              {conversaAberta === candidatura.id && (
-                <Conversa interesseId={candidatura.id} podeEnviar={candidatura.status === 'selecionado'} />
+              ) : (
+                <Conversa interesseId={selecionada.id} podeEnviar={selecionada.status === 'selecionado'} />
               )}
-            </div>
-          )
-        })}
-      </div>
+            </>
+          )}
+        </CaixaConversas>
+      )}
     </div>
   )
 }

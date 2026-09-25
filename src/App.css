@@ -2186,3 +2186,351 @@ button.metrica:hover {
     gap: 14px;
   }
 }
+
+/* ---------- Conversas (chat) ---------- */
+
+.caixa-conversas {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  background: #fff;
+  border: 1px solid #e5e1e8;
+  border-radius: 18px;
+  overflow: hidden;
+  height: min(640px, calc(100svh - 230px));
+  min-height: 460px;
+}
+
+.painel .caixa-conversas {
+  border: 0;
+  border-radius: 0;
+  margin: -24px;
+}
+
+.lista-conversas {
+  border-right: 1px solid #e8e5ec;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lista-conversas button {
+  width: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  gap: 11px;
+  text-align: left;
+  transition: 0.15s;
+}
+
+.lista-conversas button:hover {
+  background: #faf9fc;
+}
+
+.lista-conversas button.ativa {
+  background: var(--acento-claro);
+  border-color: color-mix(in srgb, var(--acento) 25%, transparent);
+}
+
+.lista-conversas button > div {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.lista-conversas b {
+  font-size: 14px;
+  color: var(--titulo);
+}
+
+.lista-conversas p {
+  font-size: 12px;
+  color: #817b87;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.lista-conversas .selo {
+  font-size: 11px;
+  padding: 3px 9px;
+  margin-top: 2px;
+}
+
+.avatar-conversa {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--acento);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 800;
+  flex: none;
+}
+
+.avatar-conversa--foto {
+  background-size: cover;
+  background-position: center;
+}
+
+.painel-conversa {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.cabecalho-conversa {
+  min-height: 70px;
+  border-bottom: 1px solid #e8e5ec;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  flex-wrap: wrap;
+}
+
+.cabecalho-conversa > div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 140px;
+}
+
+.cabecalho-conversa b {
+  font-size: 15px;
+  color: var(--titulo);
+}
+
+.cabecalho-conversa small {
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+.cabecalho-conversa__acoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.conversa-mensagens {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: #faf9fb;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.conversa-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.conversa-dia {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #aaa4ae;
+  margin: 6px 0 12px;
+}
+
+.conversa-vazia {
+  margin: auto;
+  text-align: center;
+  font-size: 13px;
+  color: var(--texto-suave);
+  max-width: 300px;
+}
+
+.bolha {
+  padding: 11px 14px;
+  border-radius: 14px;
+  max-width: 70%;
+  font-size: 14px;
+  line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(45, 35, 70, 0.04);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.bolha b {
+  display: block;
+  font-size: 12px;
+  color: var(--acento-escuro);
+  margin-bottom: 2px;
+}
+
+.bolha small {
+  display: block;
+  text-align: right;
+  font-size: 11px;
+  opacity: 0.65;
+  margin-top: 4px;
+}
+
+.bolha--dela {
+  align-self: flex-start;
+  background: #fff;
+  border: 1px solid #ebe8ee;
+  border-bottom-left-radius: 4px;
+  color: var(--texto);
+}
+
+.bolha--minha {
+  align-self: flex-end;
+  background: var(--acento);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.conversa-rodape {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid #e8e5ec;
+  background: #fff;
+}
+
+.conversa-rodape input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #e1dde5;
+  border-radius: 11px;
+  height: 44px;
+  padding: 0 14px;
+  font-size: 14px;
+  outline: 0;
+}
+
+.conversa-rodape input:focus {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px var(--acento-claro);
+}
+
+.conversa-enviar {
+  border: 0;
+  background: var(--acento);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+
+.conversa-enviar:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.conversa-rodape--fechada {
+  justify-content: center;
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+.conversa-placeholder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #b0aab7;
+  background: #faf9fb;
+  text-align: center;
+  padding: 30px;
+}
+
+.conversa-placeholder b {
+  font-size: 15px;
+  color: var(--titulo);
+}
+
+.conversa-placeholder p {
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 280px;
+  color: var(--texto-suave);
+}
+
+.conversa-convite {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 30px;
+  background: linear-gradient(135deg, #faf9fb, var(--acento-claro));
+}
+
+.conversa-convite b {
+  font-family: var(--display);
+  font-size: 20px;
+  color: var(--titulo);
+}
+
+.conversa-convite p {
+  font-size: 14px;
+  color: var(--texto-suave);
+  max-width: 420px;
+}
+
+.conversa-convite > div {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .caixa-conversas {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    height: auto;
+  }
+  .lista-conversas {
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid #e8e5ec;
+  }
+  .lista-conversas button {
+    min-width: 240px;
+  }
+  .painel-conversa {
+    height: 560px;
+  }
+}
+
+@media (max-width: 600px) {
+  .painel .caixa-conversas {
+    margin: -17px;
+  }
+  .bolha {
+    max-width: 88%;
+  }
+}
+
+.painel:has(.caixa-conversas) {
+  overflow: hidden;
+}

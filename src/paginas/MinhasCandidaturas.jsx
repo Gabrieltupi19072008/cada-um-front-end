@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { MessageCircle } from 'lucide-react'
+import { Building2 } from 'lucide-react'
 import Layout from '../componentes/Layout'
 import CabecalhoPagina from '../componentes/CabecalhoPagina'
 import Botao from '../componentes/Botao'
-import Selo from '../componentes/Selo'
 import Conversa from '../componentes/Conversa'
+import CaixaConversas, { CabecalhoConversa, ConversaBloqueada } from '../componentes/CaixaConversas'
 import cliente from '../api/cliente'
 
 const ROTULOS_STATUS = {
@@ -19,15 +19,21 @@ const ROTULOS_STATUS = {
 export default function MinhasCandidaturas() {
   const [candidaturas, setCandidaturas] = useState([])
   const [erro, setErro] = useState('')
-  const [conversaAberta, setConversaAberta] = useState(null)
+  const [selecionadoId, setSelecionadoId] = useState(null)
   const navegar = useNavigate()
 
   useEffect(() => {
     cliente
       .get('/candidatos/me/candidaturas')
-      .then((resposta) => setCandidaturas(resposta.data))
+      .then((resposta) => {
+        setCandidaturas(resposta.data)
+        setSelecionadoId(resposta.data[0]?.id ?? null)
+      })
       .catch(() => setErro('Não foi possível carregar suas candidaturas'))
   }, [])
+
+  const selecionada = candidaturas.find((candidatura) => candidatura.id === selecionadoId)
+  const nomeEmpresa = (candidatura) => candidatura.empresa.razao_social || candidatura.empresa.usuario.nome
 
   return (
     <Layout largura="largo">
@@ -42,47 +48,47 @@ export default function MinhasCandidaturas() {
         <p className="texto-suave">Você ainda não se candidatou a nenhuma vaga.</p>
       )}
 
-      <div className="lista-candidatos">
-        {candidaturas.map((candidatura) => {
-          const podeConversar = ['selecionado', 'aceito', 'recusado'].includes(candidatura.status)
-          return (
-            <div key={candidatura.id} style={{ marginBottom: 8 }}>
-              <div className="linha-candidato">
-                <div>
-                  <p className="linha-candidato__nome">
-                    {candidatura.vaga ? candidatura.vaga.titulo : 'Vaga'}
-                  </p>
-                  <p className="linha-candidato__info">
-                    <span
-                      onClick={() => navegar(`/candidato/empresas/${candidatura.empresa.id}`)}
-                      style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                    >
-                      {candidatura.empresa.razao_social || candidatura.empresa.usuario.nome}
-                    </span>
-                  </p>
-                </div>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                  <Selo variante={ROTULOS_STATUS[candidatura.status].variante}>
-                    {ROTULOS_STATUS[candidatura.status].texto}
-                  </Selo>
-                  {podeConversar && (
-                    <Botao
-                      variante="contorno"
-                      icone={MessageCircle}
-                      onClick={() => setConversaAberta((atual) => (atual === candidatura.id ? null : candidatura.id))}
-                    >
-                      {conversaAberta === candidatura.id ? 'Fechar conversa' : 'Conversar'}
-                    </Botao>
-                  )}
-                </div>
-              </div>
-              {conversaAberta === candidatura.id && (
-                <Conversa interesseId={candidatura.id} podeEnviar={candidatura.status === 'selecionado'} />
+      {candidaturas.length > 0 && (
+        <CaixaConversas
+          itens={candidaturas.map((candidatura) => ({
+            id: candidatura.id,
+            nome: nomeEmpresa(candidatura),
+            fotoUrl: candidatura.empresa.usuario.foto_url,
+            resumo: candidatura.vaga ? candidatura.vaga.titulo : 'Vaga',
+            selo: ROTULOS_STATUS[candidatura.status],
+          }))}
+          selecionadoId={selecionadoId}
+          aoSelecionar={setSelecionadoId}
+        >
+          {selecionada && (
+            <>
+              <CabecalhoConversa
+                nome={nomeEmpresa(selecionada)}
+                fotoUrl={selecionada.empresa.usuario.foto_url}
+                subtitulo={selecionada.vaga ? `Vaga: ${selecionada.vaga.titulo}` : 'Vaga'}
+                selo={ROTULOS_STATUS[selecionada.status]}
+                acoes={
+                  <Botao
+                    variante="contorno"
+                    icone={Building2}
+                    onClick={() => navegar(`/candidato/empresas/${selecionada.empresa.id}`)}
+                  >
+                    Ver empresa
+                  </Botao>
+                }
+              />
+              {['selecionado', 'aceito', 'recusado'].includes(selecionada.status) ? (
+                <Conversa interesseId={selecionada.id} podeEnviar={selecionada.status === 'selecionado'} />
+              ) : (
+                <ConversaBloqueada
+                  titulo="Sua candidatura está em análise"
+                  texto="Quando a empresa selecionar você, a conversa é liberada aqui."
+                />
               )}
-            </div>
-          )
-        })}
-      </div>
+            </>
+          )}
+        </CaixaConversas>
+      )}
     </Layout>
   )
 }

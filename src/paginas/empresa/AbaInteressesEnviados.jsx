@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Check, X, MessageCircle } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Check, FileText, X } from 'lucide-react'
 import cliente from '../../api/cliente'
-import Selo from '../../componentes/Selo'
 import Botao from '../../componentes/Botao'
 import Conversa from '../../componentes/Conversa'
+import CaixaConversas, { CabecalhoConversa, ConversaBloqueada } from '../../componentes/CaixaConversas'
 
 const ROTULOS_STATUS = {
   pendente: { texto: 'Pendente', variante: 'alerta' },
   visualizado: { texto: 'Visualizado', variante: 'acento' },
-  selecionado: { texto: 'Selecionado', variante: 'acento' },
+  selecionado: { texto: 'Conversando', variante: 'acento' },
   aceito: { texto: 'Aceito', variante: 'sucesso' },
   recusado: { texto: 'Recusado', variante: 'navy' },
 }
@@ -17,12 +18,16 @@ export default function AbaInteressesEnviados() {
   const [interesses, setInteresses] = useState([])
   const [erro, setErro] = useState('')
   const [erroResposta, setErroResposta] = useState('')
-  const [conversaAberta, setConversaAberta] = useState(null)
+  const [selecionadoId, setSelecionadoId] = useState(null)
+  const navegar = useNavigate()
 
   function carregar() {
     cliente
       .get('/empresas/me/interesses')
-      .then((resposta) => setInteresses(resposta.data))
+      .then((resposta) => {
+        setInteresses(resposta.data)
+        setSelecionadoId((atual) => atual ?? resposta.data[0]?.id ?? null)
+      })
       .catch(() => setErro('Não foi possível carregar os interesses'))
   }
 
@@ -40,56 +45,69 @@ export default function AbaInteressesEnviados() {
     }
   }
 
+  const selecionado = interesses.find((interesse) => interesse.id === selecionadoId)
+
   return (
     <div>
-      <h2 style={{ marginBottom: 16 }}>Interesses enviados</h2>
       {erro && <p className="aviso aviso--erro">{erro}</p>}
       {erroResposta && <p className="aviso aviso--erro">{erroResposta}</p>}
       {interesses.length === 0 && !erro && (
         <p className="texto-suave">Você ainda não demonstrou interesse em nenhum candidato.</p>
       )}
-      <div className="lista-candidatos">
-        {interesses.map((interesse) => {
-          const podeConversar = ['selecionado', 'aceito', 'recusado'].includes(interesse.status)
-          return (
-            <div key={interesse.id} style={{ marginBottom: 8 }}>
-              <div className="linha-candidato">
-                <div>
-                  <p className="linha-candidato__nome">{interesse.candidato.usuario.nome}</p>
-                  <p className="linha-candidato__info">{interesse.mensagem || 'Sem mensagem'}</p>
-                </div>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                  <Selo variante={ROTULOS_STATUS[interesse.status].variante}>
-                    {ROTULOS_STATUS[interesse.status].texto}
-                  </Selo>
-                  {podeConversar && (
+
+      {interesses.length > 0 && (
+        <CaixaConversas
+          itens={interesses.map((interesse) => ({
+            id: interesse.id,
+            nome: interesse.candidato.usuario.nome,
+            fotoUrl: interesse.candidato.usuario.foto_url,
+            resumo: interesse.mensagem || 'Sem mensagem',
+            selo: ROTULOS_STATUS[interesse.status],
+          }))}
+          selecionadoId={selecionadoId}
+          aoSelecionar={setSelecionadoId}
+        >
+          {selecionado && (
+            <>
+              <CabecalhoConversa
+                nome={selecionado.candidato.usuario.nome}
+                fotoUrl={selecionado.candidato.usuario.foto_url}
+                subtitulo={selecionado.mensagem ? `“${selecionado.mensagem}”` : 'Interesse enviado'}
+                selo={ROTULOS_STATUS[selecionado.status]}
+                acoes={
+                  <>
                     <Botao
                       variante="contorno"
-                      icone={MessageCircle}
-                      onClick={() => setConversaAberta((atual) => (atual === interesse.id ? null : interesse.id))}
+                      icone={FileText}
+                      onClick={() => navegar(`/empresa/candidatos/${selecionado.candidato.id}`)}
                     >
-                      {conversaAberta === interesse.id ? 'Fechar conversa' : 'Conversar'}
+                      Ver currículo
                     </Botao>
-                  )}
-                  {interesse.status === 'selecionado' && (
-                    <>
-                      <Botao variante="sucesso" icone={Check} onClick={() => responder(interesse.id, 'aceito')}>
-                        Aceitar
-                      </Botao>
-                      <Botao variante="contorno" icone={X} onClick={() => responder(interesse.id, 'recusado')}>
-                        Recusar
-                      </Botao>
-                    </>
-                  )}
-                </div>
-              </div>
-              {conversaAberta === interesse.id && (
-                <Conversa interesseId={interesse.id} podeEnviar={interesse.status === 'selecionado'} />
+                    {selecionado.status === 'selecionado' && (
+                      <>
+                        <Botao variante="sucesso" icone={Check} onClick={() => responder(selecionado.id, 'aceito')}>
+                          Aceitar
+                        </Botao>
+                        <Botao variante="contorno" icone={X} onClick={() => responder(selecionado.id, 'recusado')}>
+                          Recusar
+                        </Botao>
+                      </>
+                    )}
+                  </>
+                }
+              />
+              {['selecionado', 'aceito', 'recusado'].includes(selecionado.status) ? (
+                <Conversa interesseId={selecionado.id} podeEnviar={selecionado.status === 'selecionado'} />
+              ) : (
+                <ConversaBloqueada
+                  titulo="Aguardando resposta do candidato"
+                  texto="Quando o candidato aceitar o seu contato, a conversa é liberada aqui."
+                />
               )}
-            </div>
-          )
-        })}
-      </div>
+            </>
+          )}
+        </CaixaConversas>
+      )}
     </div>
   )
 }
