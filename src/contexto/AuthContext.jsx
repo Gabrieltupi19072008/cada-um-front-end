@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import cliente from '../api/cliente'
 
 const AuthContexto = createContext(null)
@@ -6,6 +6,20 @@ const AuthContexto = createContext(null)
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem('token'))
   const [perfil, setPerfil] = useState(() => localStorage.getItem('perfil'))
+  const [usuario, setUsuario] = useState(null)
+
+  const recarregarUsuario = useCallback(() => {
+    if (!localStorage.getItem('token')) return Promise.resolve()
+    return cliente
+      .get('/usuarios/me')
+      .then((resposta) => setUsuario(resposta.data))
+      .catch(() => setUsuario(null))
+  }, [])
+
+  useEffect(() => {
+    if (token) recarregarUsuario()
+    else setUsuario(null)
+  }, [token, recarregarUsuario])
 
   function salvarSessao(dadosToken) {
     localStorage.setItem('token', dadosToken.access_token)
@@ -36,6 +50,8 @@ export function AuthProvider({ children }) {
   const valor = {
     token,
     perfil,
+    usuario,
+    recarregarUsuario,
     autenticado: Boolean(token),
     entrar,
     sair,

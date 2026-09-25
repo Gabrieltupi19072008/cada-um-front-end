@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, ShieldCheck } from 'lucide-react'
+import { ShieldCheck } from 'lucide-react'
 import Layout from '../componentes/Layout'
+import CabecalhoPagina from '../componentes/CabecalhoPagina'
 import Cartao from '../componentes/Cartao'
-import Botao from '../componentes/Botao'
 import Aviso from '../componentes/Aviso'
 import cliente from '../api/cliente'
 
@@ -12,7 +11,6 @@ export default function Privacidade() {
   const [erro, setErro] = useState('')
   const [erroSalvar, setErroSalvar] = useState('')
   const [salvando, setSalvando] = useState(false)
-  const navegar = useNavigate()
 
   useEffect(() => {
     cliente
@@ -53,9 +51,11 @@ export default function Privacidade() {
 
   return (
     <Layout largura="padrao">
-      <Botao variante="contorno" icone={ArrowLeft} onClick={() => navegar('/candidato')} style={{ marginBottom: 16 }}>
-        Voltar ao início
-      </Botao>
+      <CabecalhoPagina
+        sobretitulo="PRIVACIDADE E SEGURANÇA"
+        titulo="Você decide o que compartilhar"
+        descricao="Controle como suas informações aparecem para as empresas."
+      />
       <Cartao titulo="Privacidade e visibilidade" icone={ShieldCheck}>
         <Aviso variante="sucesso">
           De acordo com a LGPD, você decide quem pode ver o seu perfil. Isso pode ser mudado a qualquer momento.

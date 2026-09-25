@@ -1,11 +1,8 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { UserPlus } from 'lucide-react'
-import Layout from '../componentes/Layout'
-import Cartao from '../componentes/Cartao'
-import Botao from '../componentes/Botao'
+import { ArrowRight, Eye, EyeOff, Lock, Mail, ShieldCheck } from 'lucide-react'
+import LayoutPublico from '../componentes/LayoutPublico'
 import Aviso from '../componentes/Aviso'
-import Logo from '../componentes/Logo'
 import { useAuth } from '../contexto/AuthContext'
 
 export default function Login() {
@@ -14,6 +11,7 @@ export default function Login() {
 
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [mostrarSenha, setMostrarSenha] = useState(false)
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(false)
 
@@ -32,59 +30,67 @@ export default function Login() {
   }
 
   return (
-    <Layout largura="cheia">
-      <div className="tela-login">
-        <div className="login-cartao login-cartao--simples">
-          <Cartao>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
-              <Logo tamanho={54} mostrarNome={false} />
-            </div>
-            <h2 style={{ textAlign: 'center', marginBottom: 20 }}>Entrar</h2>
-
-            {erro && <Aviso variante="erro">{erro}</Aviso>}
-
-            <form onSubmit={aoEntrar}>
-              <label className="campo">
-                E-mail
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="seu@email.com"
-                  required
-                />
-              </label>
-              <label className="campo">
-                Senha
-                <input
-                  type="password"
-                  value={senha}
-                  onChange={(e) => setSenha(e.target.value)}
-                  placeholder="********"
-                  required
-                />
-              </label>
-              <Botao type="submit" variante="gradiente" className="botao--bloco" disabled={carregando}>
-                {carregando ? 'Entrando...' : 'Entrar'}
-              </Botao>
-            </form>
-
-            <p className="login-link">
-              <Link to="/esqueci-senha">Esqueceu a senha?</Link>
-            </p>
-
-            <Botao
-              variante="contorno"
-              icone={UserPlus}
-              className="botao--bloco"
-              onClick={() => navegar('/cadastro')}
-              style={{ marginTop: 8 }}
-            >
-              Cadastre-se
-            </Botao>
-          </Cartao>
+    <LayoutPublico>
+      <form onSubmit={aoEntrar}>
+        <div className="cartao-publico__cabecalho">
+          <small>Bem-vindo de volta</small>
+          <h2>Acesse sua conta</h2>
+          <p>Entre com seu e-mail e continue sua jornada.</p>
         </div>
-      </div>
-    </Layout>
+
+        {erro && <Aviso variante="erro">{erro}</Aviso>}
+
+        <label className="campo-publico">
+          E-mail
+          <div className="campo-icone">
+            <Mail size={19} />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="seu@email.com"
+              autoComplete="email"
+              required
+            />
+          </div>
+        </label>
+        <label className="campo-publico">
+          Senha
+          <div className="campo-icone">
+            <Lock size={19} />
+            <input
+              type={mostrarSenha ? 'text' : 'password'}
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              placeholder="********"
+              autoComplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setMostrarSenha((atual) => !atual)}
+              aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+            >
+              {mostrarSenha ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+        </label>
+
+        <div className="linha-form-publico">
+          <Link to="/esqueci-senha">Esqueci minha senha</Link>
+        </div>
+
+        <button type="submit" className="botao-marca" disabled={carregando}>
+          {carregando ? 'Entrando...' : 'Entrar na plataforma'} <ArrowRight size={20} />
+        </button>
+
+        <p className="texto-cadastro">
+          Ainda não faz parte? <Link to="/cadastro">Crie sua conta</Link>
+        </p>
+        <div className="nota-confianca">
+          <ShieldCheck size={16} /> Seus dados estão protegidos e seguros.
+        </div>
+      </form>
+    </LayoutPublico>
   )
 }

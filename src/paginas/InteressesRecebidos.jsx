@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, X, MessageCircle, UserCheck } from 'lucide-react'
+import { X, MessageCircle, UserCheck } from 'lucide-react'
 import Layout from '../componentes/Layout'
+import CabecalhoPagina from '../componentes/CabecalhoPagina'
 import Botao from '../componentes/Botao'
 import Selo from '../componentes/Selo'
 import Conversa from '../componentes/Conversa'
@@ -45,9 +46,11 @@ export default function InteressesRecebidos() {
 
   return (
     <Layout largura="largo">
-      <Botao variante="contorno" icone={ArrowLeft} onClick={() => navegar('/candidato')} style={{ marginBottom: 16 }}>
-        Voltar ao início
-      </Botao>
+      <CabecalhoPagina
+        sobretitulo="EMPRESAS INTERESSADAS"
+        titulo="Boas conversas começam aqui"
+        descricao="Empresas que encontraram seu perfil e querem conhecer você."
+      />
 
       {erro && <p className="aviso aviso--erro">{erro}</p>}
       {erroResposta && <p className="aviso aviso--erro">{erroResposta}</p>}

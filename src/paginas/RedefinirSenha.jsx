@@ -1,11 +1,8 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
-import Layout from '../componentes/Layout'
-import Cartao from '../componentes/Cartao'
-import Botao from '../componentes/Botao'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
+import LayoutPublico from '../componentes/LayoutPublico'
 import Aviso from '../componentes/Aviso'
-import Logo from '../componentes/Logo'
 import cliente from '../api/cliente'
 
 export default function RedefinirSenha() {
@@ -38,14 +35,15 @@ export default function RedefinirSenha() {
   }
 
   return (
-    <Layout largura="cheia">
-      <div className="tela-login">
-        <div className="login-cartao login-cartao--simples">
-          <Cartao>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
-              <Logo tamanho={54} mostrarNome={false} />
+    <LayoutPublico>
+            <Link to="/login" className="voltar-publico">
+              <ArrowLeft size={15} /> Voltar para o login
+            </Link>
+            <div className="cartao-publico__cabecalho">
+              <small>RECUPERAÇÃO DE ACESSO</small>
+              <h2>Escolher nova senha</h2>
+              <p>Crie uma senha nova para voltar a acessar sua conta.</p>
             </div>
-            <h2 style={{ textAlign: 'center', marginBottom: 20 }}>Escolher nova senha</h2>
 
             {!token && <Aviso variante="erro">Link inválido. Solicite uma nova redefinição de senha.</Aviso>}
 
@@ -73,9 +71,9 @@ export default function RedefinirSenha() {
                     required
                   />
                 </label>
-                <Botao type="submit" variante="gradiente" className="botao--bloco" disabled={enviando}>
-                  {enviando ? 'Salvando...' : 'Redefinir senha'}
-                </Botao>
+                <button type="submit" className="botao-marca" disabled={enviando}>
+                  {enviando ? 'Salvando...' : 'Redefinir senha'} <ArrowRight size={20} />
+                </button>
               </form>
             )}
 
@@ -87,16 +85,6 @@ export default function RedefinirSenha() {
                 </p>
               </div>
             )}
-
-            <p className="login-link" style={{ marginTop: 16 }}>
-              <Link to="/login">
-                <ArrowLeft size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />
-                Voltar ao login
-              </Link>
-            </p>
-          </Cartao>
-        </div>
-      </div>
-    </Layout>
+    </LayoutPublico>
   )
 }

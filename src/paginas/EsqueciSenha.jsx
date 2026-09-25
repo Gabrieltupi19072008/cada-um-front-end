@@ -1,11 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
-import Layout from '../componentes/Layout'
-import Cartao from '../componentes/Cartao'
-import Botao from '../componentes/Botao'
+import { ArrowLeft, ArrowRight, Mail, ShieldCheck } from 'lucide-react'
+import LayoutPublico from '../componentes/LayoutPublico'
 import Aviso from '../componentes/Aviso'
-import Logo from '../componentes/Logo'
 import cliente from '../api/cliente'
 
 export default function EsqueciSenha() {
@@ -15,7 +12,7 @@ export default function EsqueciSenha() {
   const [enviando, setEnviando] = useState(false)
 
   async function aoEnviar(evento) {
-    evento.preventDefault()
+    evento?.preventDefault()
     setErro('')
     setEnviando(true)
     try {
@@ -29,53 +26,56 @@ export default function EsqueciSenha() {
   }
 
   return (
-    <Layout largura="cheia">
-      <div className="tela-login">
-        <div className="login-cartao login-cartao--simples">
-          <Cartao>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
-              <Logo tamanho={54} mostrarNome={false} />
-            </div>
-            <h2 style={{ textAlign: 'center', marginBottom: 20 }}>Recuperar senha</h2>
-
-            {erro && <Aviso variante="erro">{erro}</Aviso>}
-
-            {!resultado && (
-              <form onSubmit={aoEnviar}>
-                <label className="campo">
-                  Seu e-mail
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="seu@email.com"
-                    required
-                  />
-                </label>
-                <Botao type="submit" variante="gradiente" className="botao--bloco" disabled={enviando}>
-                  {enviando ? 'Enviando...' : 'Enviar link de redefinição'}
-                </Botao>
-              </form>
-            )}
-
-            {resultado && (
-              <div>
-                <Aviso variante="sucesso">{resultado.mensagem}</Aviso>
-                <p className="texto-suave" style={{ textAlign: 'center' }}>
-                  Confira sua caixa de entrada (e o spam) e clique no link para escolher uma senha nova.
-                </p>
-              </div>
-            )}
-
-            <p className="login-link" style={{ marginTop: 16 }}>
-              <Link to="/login">
-                <ArrowLeft size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />
-                Voltar ao login
-              </Link>
-            </p>
-          </Cartao>
-        </div>
+    <LayoutPublico>
+      <Link to="/login" className="voltar-publico">
+        <ArrowLeft size={15} /> Voltar para o login
+      </Link>
+      <div className="cartao-publico__cabecalho">
+        <small>RECUPERAÇÃO DE ACESSO</small>
+        <h2>{resultado ? 'Confira seu e-mail' : 'Esqueceu sua senha?'}</h2>
+        <p>
+          {resultado
+            ? 'Enviamos um link seguro para você criar uma nova senha.'
+            : 'Sem problema. Vamos ajudar você a voltar para sua conta.'}
+        </p>
       </div>
-    </Layout>
+
+      {erro && <Aviso variante="erro">{erro}</Aviso>}
+
+      {resultado ? (
+        <div className="sucesso-recuperacao">
+          <span>
+            <Mail size={22} />
+          </span>
+          <b>{resultado.mensagem}</b>
+          <p>Confira também sua caixa de spam e clique no link para escolher uma senha nova.</p>
+          <button type="button" onClick={() => aoEnviar()} disabled={enviando}>
+            {enviando ? 'Enviando...' : 'Enviar novamente'}
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={aoEnviar}>
+          <label className="campo-publico">
+            Seu e-mail
+            <div className="campo-icone">
+              <Mail size={19} />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu@email.com"
+                required
+              />
+            </div>
+          </label>
+          <button type="submit" className="botao-marca" disabled={enviando} style={{ marginTop: 22 }}>
+            {enviando ? 'Enviando...' : 'Enviar link de recuperação'} <ArrowRight size={20} />
+          </button>
+          <div className="nota-confianca">
+            <ShieldCheck size={16} /> Por segurança, nunca pediremos sua senha por e-mail.
+          </div>
+        </form>
+      )}
+    </LayoutPublico>
   )
 }

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, MessageCircle } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
 import Layout from '../componentes/Layout'
+import CabecalhoPagina from '../componentes/CabecalhoPagina'
 import Botao from '../componentes/Botao'
 import Selo from '../componentes/Selo'
 import Conversa from '../componentes/Conversa'
@@ -30,11 +31,11 @@ export default function MinhasCandidaturas() {
 
   return (
     <Layout largura="largo">
-      <Botao variante="contorno" icone={ArrowLeft} onClick={() => navegar('/candidato')} style={{ marginBottom: 16 }}>
-        Voltar ao início
-      </Botao>
-
-      <h2 style={{ marginBottom: 16 }}>Minhas candidaturas</h2>
+      <CabecalhoPagina
+        sobretitulo="MINHAS CANDIDATURAS"
+        titulo="Acompanhe cada oportunidade"
+        descricao="Veja com clareza em que etapa está cada processo."
+      />
 
       {erro && <p className="aviso aviso--erro">{erro}</p>}
       {!erro && candidaturas.length === 0 && (

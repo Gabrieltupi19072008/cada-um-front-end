@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Briefcase, CheckCircle2 } from 'lucide-react'
+import { Briefcase, CheckCircle2 } from 'lucide-react'
 import Layout from '../componentes/Layout'
+import CabecalhoPagina from '../componentes/CabecalhoPagina'
 import Botao from '../componentes/Botao'
 import Selo from '../componentes/Selo'
 import cliente from '../api/cliente'
@@ -41,9 +42,11 @@ export default function VagasDisponiveis() {
 
   return (
     <Layout largura="largo">
-      <Botao variante="contorno" icone={ArrowLeft} onClick={() => navegar('/candidato')} style={{ marginBottom: 16 }}>
-        Voltar ao início
-      </Botao>
+      <CabecalhoPagina
+        sobretitulo="OPORTUNIDADES PARA VOCÊ"
+        titulo="Encontre um lugar para crescer"
+        descricao="Vagas de empresas comprometidas com ambientes mais inclusivos."
+      />
 
       {erro && <p className="aviso aviso--erro">{erro}</p>}
       {mensagemConfirmacao && <p className="aviso aviso--sucesso">{mensagemConfirmacao}</p>}

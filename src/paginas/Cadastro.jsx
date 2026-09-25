@@ -1,11 +1,8 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { User, Building2 } from 'lucide-react'
-import Layout from '../componentes/Layout'
-import Cartao from '../componentes/Cartao'
-import Botao from '../componentes/Botao'
+import { useNavigate, Link } from 'react-router-dom'
+import { ArrowRight, User, Building2 } from 'lucide-react'
+import LayoutPublico from '../componentes/LayoutPublico'
 import Aviso from '../componentes/Aviso'
-import Logo from '../componentes/Logo'
 import cliente from '../api/cliente'
 import { ESTADOS_BRASIL } from '../dados/estadosBrasil'
 
@@ -56,14 +53,12 @@ export default function Cadastro() {
   const camposExtras = CAMPOS_POR_TIPO[tipoCadastro]
 
   return (
-    <Layout largura="cheia">
-      <div className="tela-login">
-        <div className="login-cartao login-cartao--simples">
-          <Cartao>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
-              <Logo tamanho={54} mostrarNome={false} />
+    <LayoutPublico>
+            <div className="cartao-publico__cabecalho">
+              <small>Faça parte</small>
+              <h2>Criar nova conta</h2>
+              <p>Leva só alguns minutos.</p>
             </div>
-            <h2 style={{ textAlign: 'center', marginBottom: 20 }}>Criar nova conta</h2>
 
             {erro && <Aviso variante="erro">{erro}</Aviso>}
             {sucesso && <Aviso variante="sucesso">Conta criada! Redirecionando para o login...</Aviso>}
@@ -71,7 +66,7 @@ export default function Cadastro() {
             <form onSubmit={aoCadastrar}>
               <div className="campo">
                 Sou um(a):
-                <div className="seletor-tipo">
+                <div className="seletor-perfil">
                   <button
                     type="button"
                     className={tipoCadastro === 'candidato' ? 'ativo' : ''}
@@ -156,20 +151,14 @@ export default function Cadastro() {
                 </label>
               ))}
 
-              <Botao type="submit" variante="gradiente" className="botao--bloco" disabled={carregando}>
-                {carregando ? 'Enviando...' : 'Criar conta'}
-              </Botao>
+              <button type="submit" className="botao-marca" disabled={carregando}>
+                {carregando ? 'Enviando...' : 'Criar conta'} <ArrowRight size={20} />
+              </button>
             </form>
 
-            <p className="login-link">
-              Já tem conta?{' '}
-              <span onClick={() => navegar('/login')} style={{ cursor: 'pointer', color: 'var(--acento)' }}>
-                Entrar
-              </span>
+            <p className="texto-cadastro">
+              Já tem conta? <Link to="/login">Entrar</Link>
             </p>
-          </Cartao>
-        </div>
-      </div>
-    </Layout>
+    </LayoutPublico>
   )
 }

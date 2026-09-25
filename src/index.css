@@ -1,32 +1,36 @@
 :root {
-  --fundo: #faf7f2;
-  --fundo-2: #f2ede3;
+  --fundo: #f7f7fa;
+  --fundo-2: #f5f3f9;
   --cartao: #ffffff;
-  --texto: #6b6459;
-  --texto-suave: #8a8378;
-  --titulo: #3a3630;
-  --borda-sutil: #ece5d8;
-  --sombra:
-    0 1px 2px rgba(58, 54, 48, 0.06), 0 8px 24px rgba(58, 54, 48, 0.08);
+  --texto: #4f4b58;
+  --texto-suave: #85818d;
+  --titulo: #2c2a33;
+  --borda-sutil: #eae9ee;
+  --borda: #e3dfe7;
+  --sombra: 0 12px 30px rgba(45, 38, 65, 0.06);
 
   /* Cor de destaque padrão (área do candidato). Empresa/Admin sobrescrevem via
      .tema-empresa / .tema-admin mais abaixo. */
-  --acento: #9b8ce0;
-  --acento-escuro: #7c6cc4;
-  --acento-claro: rgba(155, 140, 224, 0.12);
+  --acento: #8b7cf1;
+  --acento-escuro: #6652c5;
+  --acento-claro: #f0edff;
 
-  --sucesso: #6dbe45;
-  --sucesso-claro: rgba(109, 190, 69, 0.14);
-  --alerta: #e0a63a;
-  --alerta-claro: rgba(224, 166, 58, 0.14);
-  --erro: #e5484d;
-  --erro-claro: rgba(229, 72, 77, 0.1);
+  --laranja: #e07428;
+  --laranja-escuro: #d4621a;
 
-  --gradiente-pastel: linear-gradient(90deg, #f5c99b, #c4b5e8);
+  --sucesso: #4d9e5a;
+  --sucesso-claro: #edf7ee;
+  --alerta: #c28221;
+  --alerta-claro: #fff4dd;
+  --erro: #c0392b;
+  --erro-claro: #fdecea;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --gradiente-marca: linear-gradient(100deg, #e07428, #d45f1e, #6651ca);
 
-  font: 16px/150% var(--sans);
+  --sans: 'Poppins', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --display: 'Fredoka', 'Poppins', system-ui, sans-serif;
+
+  font: 15px/150% var(--sans);
   color-scheme: light;
   color: var(--texto);
   background: var(--fundo);
@@ -37,15 +41,15 @@
 }
 
 .tema-empresa {
-  --acento: #e8998f;
-  --acento-escuro: #d97b6e;
-  --acento-claro: rgba(232, 153, 143, 0.14);
+  --acento: #f16a75;
+  --acento-escuro: #d94f5b;
+  --acento-claro: #fff0ee;
 }
 
 .tema-admin {
-  --acento: #7fae6e;
-  --acento-escuro: #66965a;
-  --acento-claro: rgba(127, 174, 110, 0.14);
+  --acento: #5ba653;
+  --acento-escuro: #478a40;
+  --acento-claro: #edf7eb;
 }
 
 * {
@@ -54,6 +58,7 @@
 
 body {
   margin: 0;
+  min-width: 320px;
 }
 
 #root {
@@ -64,18 +69,19 @@ body {
 
 h1, h2, h3 {
   font-family: var(--sans);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--titulo);
   margin: 0;
 }
 
 h1 {
-  font-size: 28px;
-  letter-spacing: -0.3px;
+  font-family: var(--display);
+  font-size: 30px;
+  letter-spacing: -0.02em;
 }
 
 h2 {
-  font-size: 18px;
+  font-size: 17px;
 }
 
 p {
@@ -86,6 +92,37 @@ button, input, select, textarea {
   font-family: inherit;
 }
 
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--acento) 35%, transparent);
+  outline-offset: 2px;
+}
+
 a {
-  color: var(--acento);
+  color: var(--acento-escuro);
+}
+
+@keyframes flutuar {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -12px; }
+}
+
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
