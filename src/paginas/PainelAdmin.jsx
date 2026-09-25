@@ -3,11 +3,14 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Building2, Check, Download, ShieldCheck, User } from 'lucide-react'
 import Layout from '../componentes/Layout'
 import Botao from '../componentes/Botao'
-import BarraProgresso from '../componentes/BarraProgresso'
 import SeletorFoto from '../componentes/SeletorFoto'
 import Selo from '../componentes/Selo'
 import CabecalhoPagina from '../componentes/CabecalhoPagina'
 import Destaque, { IconeDestaque } from '../componentes/Destaque'
+import AbaEmpresas from './admin/AbaEmpresas'
+import AbaCandidatos from './admin/AbaCandidatos'
+import AbaRelatorios from './admin/AbaRelatorios'
+import AbaCota from './admin/AbaCota'
 import cliente from '../api/cliente'
 import { useAuth } from '../contexto/AuthContext'
 
@@ -46,10 +49,9 @@ export default function PainelAdmin() {
 
   async function carregarTudo() {
     try {
-      const [estatisticasResp, empresasResp, candidatosResp, cotaResp] = await Promise.all([
+      const [estatisticasResp, empresasResp, cotaResp] = await Promise.all([
         cliente.get('/admin/estatisticas'),
         cliente.get('/admin/empresas', { params: { aprovada: false } }),
-        cliente.get('/admin/candidatos', { params: { aprovado: false } }),
         cliente.get('/admin/relatorio-cota'),
       ])
       setEstatisticas(estatisticasResp.data)
@@ -60,12 +62,6 @@ export default function PainelAdmin() {
           nome: e.razao_social || e.usuario.nome,
           subtitulo: 'Aguardando aprovação',
           cnpj: e.cnpj,
-        })),
-        ...candidatosResp.data.map((c) => ({
-          tipo: 'candidato',
-          id: c.id,
-          nome: c.usuario.nome,
-          subtitulo: 'Perfil em revisão',
         })),
       ])
       setCotas(cotaResp.data)
@@ -180,8 +176,8 @@ export default function PainelAdmin() {
       <Layout tema="admin" largura="inicio">
         <CabecalhoPagina
           sobretitulo="APROVAÇÕES"
-          titulo="Cadastros esperando aprovação"
-          descricao="Revise cada empresa e candidato antes de liberar o acesso à plataforma."
+          titulo="Empresas esperando aprovação"
+          descricao="Revise cada empresa antes de liberar a publicação de vagas."
         />
         <section className="painel lista-inicio">
           {pendentes.length === 0 && <p className="texto-suave">Nenhuma aprovação pendente. Tudo em dia!</p>}
@@ -191,56 +187,55 @@ export default function PainelAdmin() {
     )
   }
 
+  const SECOES_EXTRAS = {
+    empresas: {
+      sobretitulo: 'EMPRESAS',
+      titulo: 'Gerenciar empresas',
+      descricao: 'Veja os dados de cada empresa, confira o CNPJ na Receita e aprove cadastros.',
+      conteudo: <AbaEmpresas />,
+    },
+    candidatos: {
+      sobretitulo: 'CANDIDATOS',
+      titulo: 'Candidatos cadastrados',
+      descricao: 'Consulte o perfil de cada pessoa cadastrada na plataforma.',
+      conteudo: <AbaCandidatos />,
+    },
+    relatorios: {
+      sobretitulo: 'ANÁLISE DA PLATAFORMA',
+      titulo: 'Relatórios',
+      descricao: 'Dados consolidados sobre o impacto da plataforma CADA UM.',
+      conteudo: <AbaRelatorios aoExportar={exportarRelatorio} />,
+    },
+  }
+
+  if (SECOES_EXTRAS[secao]) {
+    const extra = SECOES_EXTRAS[secao]
+    return (
+      <Layout tema="admin" largura="largo">
+        <CabecalhoPagina sobretitulo={extra.sobretitulo} titulo={extra.titulo} descricao={extra.descricao} />
+        {extra.conteudo}
+      </Layout>
+    )
+  }
+
   if (secao === 'cota') {
     return (
-      <Layout tema="admin" largura="inicio">
+      <Layout tema="admin" largura="largo">
         <CabecalhoPagina
           sobretitulo="LEI DE COTAS"
           titulo="Cota PcD por empresa"
-          descricao="Quanto cada empresa aprovada já cumpriu da cota legal (Lei nº 8.213/91)."
+          descricao="Quanto cada empresa aprovada já cumpriu da cota PcD exigida pela Lei nº 8.213/91."
           acoes={
             <Botao variante="contorno" icone={Download} onClick={exportarRelatorio}>
               Exportar relatório
             </Botao>
           }
         />
-        <section className="painel lista-inicio">
-          {cotas.length === 0 && <p className="texto-suave">Nenhuma empresa aprovada ainda.</p>}
-          {cotas.map((cota) =>
-            cota.vagas_necessarias === 0 ? (
-              <div key={cota.empresa_id} className="linha-cota">
-                <div className="linha-cota__topo">
-                  <span>{cota.razao_social}</span>
-                  <span className="texto-suave">Isenta (menos de 100 funcionários ou não informado)</span>
-                </div>
-              </div>
-            ) : (
-              <div key={cota.empresa_id} className="linha-cota">
-                <div className="linha-cota__topo">
-                  <span>
-                    {cota.razao_social} — {cota.aceitos}/{cota.vagas_necessarias} vagas ({cota.percentual_legal}%
-                    exigido, {cota.total_funcionarios} funcionários)
-                  </span>
-                  <strong>{cota.percentual_cumprido}%</strong>
-                </div>
-                <BarraProgresso
-                  valor={cota.percentual_cumprido}
-                  cor={cota.percentual_cumprido >= 80 ? 'sucesso' : cota.percentual_cumprido >= 50 ? 'acento' : 'alerta'}
-                />
-              </div>
-            )
-          )}
-        </section>
+        <AbaCota cotas={cotas} />
       </Layout>
     )
   }
 
-  const empresasPendentes = pendentes.filter((item) => item.tipo === 'empresa').length
-  const candidatosPendentes = pendentes.length - empresasPendentes
-  const partesPendentes = [
-    empresasPendentes > 0 && `${empresasPendentes} ${empresasPendentes === 1 ? 'empresa' : 'empresas'}`,
-    candidatosPendentes > 0 && `${candidatosPendentes} ${candidatosPendentes === 1 ? 'candidato' : 'candidatos'}`,
-  ].filter(Boolean)
 
   return (
     <Layout tema="admin" largura="inicio">
@@ -268,33 +263,33 @@ export default function PainelAdmin() {
           <Destaque
             visual={<IconeDestaque icone={ShieldCheck} />}
             sobretitulo="PRECISA DA SUA ATENÇÃO"
-            titulo={pendentes.length === 1 ? '1 cadastro esperando aprovação' : `${pendentes.length} cadastros esperando aprovação`}
-            texto={`${partesPendentes.join(' e ')}. Empresas só podem publicar vagas depois de aprovadas.`}
+            titulo={pendentes.length === 1 ? '1 empresa esperando aprovação' : `${pendentes.length} empresas esperando aprovação`}
+            texto="Confira os dados e o CNPJ. Empresas só podem publicar vagas depois de aprovadas."
             acao={{ rotulo: 'Revisar agora', para: '/admin?secao=aprovacoes' }}
           />
         ) : (
           <Destaque
             visual={<IconeDestaque icone={ShieldCheck} />}
             sobretitulo="TUDO EM DIA"
-            titulo="Nenhum cadastro esperando aprovação"
+            titulo="Nenhuma empresa esperando aprovação"
             texto="Enquanto isso, acompanhe como as empresas estão cumprindo a cota."
             acao={{ rotulo: 'Ver cota por empresa', para: '/admin?secao=cota' }}
           />
         )}
 
         <div className="numeros-inicio">
-          <div>
+          <Link to="/admin?secao=candidatos">
             <b>{estatisticas.total_candidatos.toLocaleString('pt-BR')}</b>
             <span>candidatos</span>
-          </div>
-          <div>
+          </Link>
+          <Link to="/admin?secao=empresas">
             <b>{estatisticas.total_empresas.toLocaleString('pt-BR')}</b>
             <span>empresas</span>
-          </div>
-          <div>
+          </Link>
+          <Link to="/admin?secao=cota">
             <b>{String(estatisticas.cota_media).replace('.', ',')}%</b>
             <span>cota média PcD</span>
-          </div>
+          </Link>
         </div>
 
         {pendentes.length > 0 && (

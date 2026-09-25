@@ -17,6 +17,8 @@ import {
   ShieldCheck,
   User,
   UserCheck,
+  Users,
+  Scale,
   X,
 } from 'lucide-react'
 import Logo from './Logo'
@@ -50,7 +52,10 @@ const MENUS = {
   admin: [
     { rotulo: 'Início', icone: Home, para: '/admin' },
     { rotulo: 'Aprovações', icone: ShieldCheck, para: '/admin?secao=aprovacoes', contador: true },
-    { rotulo: 'Cota por empresa', icone: BarChart3, para: '/admin?secao=cota' },
+    { rotulo: 'Empresas', icone: Building2, para: '/admin?secao=empresas' },
+    { rotulo: 'Candidatos', icone: Users, para: '/admin?secao=candidatos' },
+    { rotulo: 'Cota por empresa', icone: Scale, para: '/admin?secao=cota' },
+    { rotulo: 'Relatórios', icone: BarChart3, para: '/admin?secao=relatorios' },
   ],
 }
 
