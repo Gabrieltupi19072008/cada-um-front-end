@@ -11,12 +11,14 @@
 
   /* Cor de destaque padrão (área do candidato). Empresa/Admin sobrescrevem via
      .tema-empresa / .tema-admin mais abaixo. */
-  --acento: #8b7cf1;
-  --acento-escuro: #6652c5;
+  --acento: #6652c5;
+  --acento-escuro: #4f3db0;
   --acento-claro: #f0edff;
 
   --laranja: #e07428;
-  --laranja-escuro: #d4621a;
+  --laranja-escuro: #c2410c;
+  --novidade: #c2410c;
+  --novidade-claro: #fff1e6;
 
   --sucesso: #4d9e5a;
   --sucesso-claro: #edf7ee;
@@ -41,14 +43,14 @@
 }
 
 .tema-empresa {
-  --acento: #f16a75;
-  --acento-escuro: #d94f5b;
+  --acento: #b83244;
+  --acento-escuro: #962636;
   --acento-claro: #fff0ee;
 }
 
 .tema-admin {
-  --acento: #5ba653;
-  --acento-escuro: #478a40;
+  --acento: #2f7d3b;
+  --acento-escuro: #256430;
   --acento-claro: #edf7eb;
 }
 

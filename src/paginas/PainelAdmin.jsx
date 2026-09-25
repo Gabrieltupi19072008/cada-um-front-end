@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
-import { BarChart3, Building2, Download, Check, Users } from 'lucide-react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { Building2, Check, Download, ShieldCheck, User } from 'lucide-react'
 import Layout from '../componentes/Layout'
 import Botao from '../componentes/Botao'
 import BarraProgresso from '../componentes/BarraProgresso'
 import SeletorFoto from '../componentes/SeletorFoto'
-import Metrica from '../componentes/Metrica'
+import Selo from '../componentes/Selo'
+import CabecalhoPagina from '../componentes/CabecalhoPagina'
+import Destaque, { IconeDestaque } from '../componentes/Destaque'
 import cliente from '../api/cliente'
 import { useAuth } from '../contexto/AuthContext'
 
@@ -18,6 +21,8 @@ export default function PainelAdmin() {
   const [consultandoReceita, setConsultandoReceita] = useState({})
   const [erroReceita, setErroReceita] = useState({})
   const { recarregarUsuario } = useAuth()
+  const [parametros] = useSearchParams()
+  const secao = parametros.get('secao')
 
   async function consultarReceita(empresaId) {
     setConsultandoReceita((atual) => ({ ...atual, [empresaId]: true }))
@@ -93,7 +98,7 @@ export default function PainelAdmin() {
 
   if (erro) {
     return (
-      <Layout tema="admin" largura="largo">
+      <Layout tema="admin" largura="inicio">
         <p className="aviso aviso--erro">{erro}</p>
       </Layout>
     )
@@ -101,136 +106,105 @@ export default function PainelAdmin() {
 
   if (!estatisticas) {
     return (
-      <Layout tema="admin" largura="largo">
+      <Layout tema="admin" largura="inicio">
         <p className="texto-suave">Carregando...</p>
       </Layout>
     )
   }
 
-  return (
-    <Layout tema="admin" largura="largo">
-      <section className="boas-vindas">
-        <div>
-          <span className="sobretitulo">VISÃO GERAL DA PLATAFORMA</span>
-          <h1>Olá, {meuUsuario ? meuUsuario.nome.split(' ')[0] : 'administrador'}.</h1>
-          <p>Acompanhe os indicadores e mantenha a comunidade segura.</p>
-        </div>
-        <div className="boas-vindas__acoes">
-          {meuUsuario && (
-            <SeletorFoto
-              fotoUrl={meuUsuario.foto_url}
-              nome={meuUsuario.nome}
-              aoAtualizar={() => {
-                carregarMeuUsuario()
-                recarregarUsuario()
-              }}
-              tamanho={56}
-            />
+  function renderAprovacao(item) {
+    const receita = dadosReceita[item.id]
+    return (
+      <div key={`${item.tipo}-${item.id}`} className="aprovacao">
+        <div className="linha-pessoa">
+          <span className="linha-pessoa__avatar">{item.tipo === 'empresa' ? <Building2 size={19} /> : <User size={19} />}</span>
+          <div>
+            <b>{item.nome}</b>
+            <p>
+              {item.tipo === 'empresa' ? `Empresa · CNPJ ${item.cnpj || 'não informado'}` : 'Candidato · perfil em revisão'}
+            </p>
+          </div>
+          <Selo variante="alerta">Aguardando</Selo>
+          {item.tipo === 'empresa' && !receita && (
+            <Botao variante="contorno" onClick={() => consultarReceita(item.id)} disabled={!!consultandoReceita[item.id]}>
+              {consultandoReceita[item.id] ? 'Consultando...' : 'Consultar Receita'}
+            </Botao>
           )}
-          <button type="button" className="acao-destaque acao-destaque--contorno" onClick={exportarRelatorio}>
-            <Download size={20} /> Exportar relatório
-          </button>
+          <Botao variante="primario" icone={Check} onClick={() => aprovar(item)}>
+            Aprovar
+          </Botao>
         </div>
-      </section>
-
-      <div className="grade-metricas">
-        <Metrica icone={Users} valor={estatisticas.total_candidatos} rotulo="Candidatos" detalhe="Cadastrados na plataforma" />
-        <Metrica icone={Building2} valor={estatisticas.total_empresas} rotulo="Empresas" detalhe="Parceiras cadastradas" />
-        <Metrica icone={BarChart3} valor={`${estatisticas.cota_media}%`} rotulo="Cota média PcD" detalhe="Entre empresas obrigadas" />
-        <Metrica
-          icone={Check}
-          valor={estatisticas.aprovacoes_pendentes}
-          rotulo="Aprovações pendentes"
-          detalhe={estatisticas.aprovacoes_pendentes > 0 ? 'Requer atenção' : 'Tudo em dia'}
-          destaque
-        />
-      </div>
-
-      <div className="grade-conteudo grade-conteudo--metades">
-        <section className="painel">
-          <header className="painel-titulo">
-            <div>
-              <h2>Aprovações pendentes</h2>
-              <p>Empresas e candidatos aguardando validação</p>
-            </div>
-          </header>
-          {pendentes.length === 0 && <p className="texto-suave">Nenhuma aprovação pendente.</p>}
-          {pendentes.map((item) => (
-            <div key={`${item.tipo}-${item.id}`} className="linha-aprovacao" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                <div className="linha-aprovacao__texto">
-                  <strong>
-                    {item.nome} {item.tipo === 'candidato' ? '(candidato)' : ''}
-                  </strong>
-                  <p>{item.subtitulo}</p>
-                </div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  {item.tipo === 'empresa' && !dadosReceita[item.id] && (
-                    <Botao
-                      variante="contorno"
-                      onClick={() => consultarReceita(item.id)}
-                      disabled={!!consultandoReceita[item.id]}
-                    >
-                      {consultandoReceita[item.id] ? 'Consultando...' : 'Consultar Receita'}
-                    </Botao>
-                  )}
-                  <Botao variante="sucesso" icone={Check} onClick={() => aprovar(item)}>
-                    Aprovar
-                  </Botao>
-                </div>
+        {item.tipo === 'empresa' && erroReceita[item.id] && <p className="aviso aviso--erro">{erroReceita[item.id]}</p>}
+        {item.tipo === 'empresa' && receita && (
+          <div className="comparacao">
+            <div className="comparacao-bloco">
+              <h3>Informado pela empresa</h3>
+              <div className="comparacao-linha">
+                <span className="comparacao-linha__chave">Razão social</span>
+                <span className="comparacao-linha__valor">{item.nome}</span>
               </div>
-              {item.tipo === 'empresa' && erroReceita[item.id] && (
-                <p className="aviso aviso--erro" style={{ marginTop: 8 }}>
-                  {erroReceita[item.id]}
-                </p>
-              )}
-              {item.tipo === 'empresa' && dadosReceita[item.id] && (
-                <div className="comparacao">
-                  <div className="comparacao-bloco">
-                    <h3>Informado pela empresa</h3>
-                    <div className="comparacao-linha">
-                      <span className="comparacao-linha__chave">Razão social</span>
-                      <span className="comparacao-linha__valor">{item.nome}</span>
-                    </div>
-                    <div className="comparacao-linha">
-                      <span className="comparacao-linha__chave">CNPJ</span>
-                      <span className="comparacao-linha__valor">{item.cnpj || 'Não informado'}</span>
-                    </div>
+              <div className="comparacao-linha">
+                <span className="comparacao-linha__chave">CNPJ</span>
+                <span className="comparacao-linha__valor">{item.cnpj || 'Não informado'}</span>
+              </div>
+            </div>
+            <div className="comparacao-bloco comparacao-bloco--receita">
+              <h3>Dados oficiais (Receita Federal)</h3>
+              {receita.encontrado ? (
+                <>
+                  <div className="comparacao-linha">
+                    <span className="comparacao-linha__chave">Razão social</span>
+                    <span className="comparacao-linha__valor">{receita.razao_social}</span>
                   </div>
-                  <div className="comparacao-bloco comparacao-bloco--receita">
-                    <h3>Dados oficiais (Receita Federal)</h3>
-                    {dadosReceita[item.id].encontrado ? (
-                      <>
-                        <div className="comparacao-linha">
-                          <span className="comparacao-linha__chave">Razão social</span>
-                          <span className="comparacao-linha__valor">{dadosReceita[item.id].razao_social}</span>
-                        </div>
-                        <div className="comparacao-linha">
-                          <span className="comparacao-linha__chave">Situação</span>
-                          <span className="comparacao-linha__valor">{dadosReceita[item.id].situacao_cadastral}</span>
-                        </div>
-                        <div className="comparacao-linha">
-                          <span className="comparacao-linha__chave">Nome fantasia</span>
-                          <span className="comparacao-linha__valor">{dadosReceita[item.id].nome_fantasia || '—'}</span>
-                        </div>
-                      </>
-                    ) : (
-                      <p className="texto-suave">CNPJ não encontrado na Receita — confira manualmente antes de aprovar.</p>
-                    )}
+                  <div className="comparacao-linha">
+                    <span className="comparacao-linha__chave">Situação</span>
+                    <span className="comparacao-linha__valor">{receita.situacao_cadastral}</span>
                   </div>
-                </div>
+                  <div className="comparacao-linha">
+                    <span className="comparacao-linha__chave">Nome fantasia</span>
+                    <span className="comparacao-linha__valor">{receita.nome_fantasia || '—'}</span>
+                  </div>
+                </>
+              ) : (
+                <p className="texto-suave">CNPJ não encontrado na Receita — confira manualmente antes de aprovar.</p>
               )}
             </div>
-          ))}
-        </section>
+          </div>
+        )}
+      </div>
+    )
+  }
 
-        <section className="painel">
-          <header className="painel-titulo">
-            <div>
-              <h2>Cota PcD por empresa</h2>
-              <p>Lei nº 8.213/91</p>
-            </div>
-          </header>
+  if (secao === 'aprovacoes') {
+    return (
+      <Layout tema="admin" largura="inicio">
+        <CabecalhoPagina
+          sobretitulo="APROVAÇÕES"
+          titulo="Cadastros esperando aprovação"
+          descricao="Revise cada empresa e candidato antes de liberar o acesso à plataforma."
+        />
+        <section className="painel lista-inicio">
+          {pendentes.length === 0 && <p className="texto-suave">Nenhuma aprovação pendente. Tudo em dia!</p>}
+          {pendentes.map(renderAprovacao)}
+        </section>
+      </Layout>
+    )
+  }
+
+  if (secao === 'cota') {
+    return (
+      <Layout tema="admin" largura="inicio">
+        <CabecalhoPagina
+          sobretitulo="LEI DE COTAS"
+          titulo="Cota PcD por empresa"
+          descricao="Quanto cada empresa aprovada já cumpriu da cota legal (Lei nº 8.213/91)."
+          acoes={
+            <Botao variante="contorno" icone={Download} onClick={exportarRelatorio}>
+              Exportar relatório
+            </Botao>
+          }
+        />
+        <section className="painel lista-inicio">
           {cotas.length === 0 && <p className="texto-suave">Nenhuma empresa aprovada ainda.</p>}
           {cotas.map((cota) =>
             cota.vagas_necessarias === 0 ? (
@@ -257,6 +231,81 @@ export default function PainelAdmin() {
             )
           )}
         </section>
+      </Layout>
+    )
+  }
+
+  const empresasPendentes = pendentes.filter((item) => item.tipo === 'empresa').length
+  const candidatosPendentes = pendentes.length - empresasPendentes
+  const partesPendentes = [
+    empresasPendentes > 0 && `${empresasPendentes} ${empresasPendentes === 1 ? 'empresa' : 'empresas'}`,
+    candidatosPendentes > 0 && `${candidatosPendentes} ${candidatosPendentes === 1 ? 'candidato' : 'candidatos'}`,
+  ].filter(Boolean)
+
+  return (
+    <Layout tema="admin" largura="inicio">
+      <div className="inicio">
+        <div className="saudacao-com-foto">
+          <header className="saudacao">
+            <span>ADMINISTRAÇÃO</span>
+            <h1>Olá, {meuUsuario ? meuUsuario.nome.split(' ')[0] : 'administrador'}.</h1>
+            <p>Mantenha a comunidade segura e acompanhe a Lei de Cotas.</p>
+          </header>
+          {meuUsuario && (
+            <SeletorFoto
+              fotoUrl={meuUsuario.foto_url}
+              nome={meuUsuario.nome}
+              aoAtualizar={() => {
+                carregarMeuUsuario()
+                recarregarUsuario()
+              }}
+              tamanho={56}
+            />
+          )}
+        </div>
+
+        {pendentes.length > 0 ? (
+          <Destaque
+            visual={<IconeDestaque icone={ShieldCheck} />}
+            sobretitulo="PRECISA DA SUA ATENÇÃO"
+            titulo={pendentes.length === 1 ? '1 cadastro esperando aprovação' : `${pendentes.length} cadastros esperando aprovação`}
+            texto={`${partesPendentes.join(' e ')}. Empresas só podem publicar vagas depois de aprovadas.`}
+            acao={{ rotulo: 'Revisar agora', para: '/admin?secao=aprovacoes' }}
+          />
+        ) : (
+          <Destaque
+            visual={<IconeDestaque icone={ShieldCheck} />}
+            sobretitulo="TUDO EM DIA"
+            titulo="Nenhum cadastro esperando aprovação"
+            texto="Enquanto isso, acompanhe como as empresas estão cumprindo a cota."
+            acao={{ rotulo: 'Ver cota por empresa', para: '/admin?secao=cota' }}
+          />
+        )}
+
+        <div className="numeros-inicio">
+          <div>
+            <b>{estatisticas.total_candidatos.toLocaleString('pt-BR')}</b>
+            <span>candidatos</span>
+          </div>
+          <div>
+            <b>{estatisticas.total_empresas.toLocaleString('pt-BR')}</b>
+            <span>empresas</span>
+          </div>
+          <div>
+            <b>{String(estatisticas.cota_media).replace('.', ',')}%</b>
+            <span>cota média PcD</span>
+          </div>
+        </div>
+
+        {pendentes.length > 0 && (
+          <section className="painel lista-inicio">
+            <header>
+              <h2>Aprovações pendentes</h2>
+              {pendentes.length > 3 && <Link to="/admin?secao=aprovacoes">Ver todas →</Link>}
+            </header>
+            {pendentes.slice(0, 3).map(renderAprovacao)}
+          </section>
+        )}
       </div>
     </Layout>
   )

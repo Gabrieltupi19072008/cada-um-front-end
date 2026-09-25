@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowRight, BarChart3, Briefcase, Mail, ShieldCheck, UserCheck } from 'lucide-react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { BarChart3, Briefcase, Plus, Search, UserCheck } from 'lucide-react'
 import Layout from '../componentes/Layout'
 import CabecalhoPagina from '../componentes/CabecalhoPagina'
-import Metrica from '../componentes/Metrica'
+import Destaque, { Atalho, IconeDestaque } from '../componentes/Destaque'
 import Selo from '../componentes/Selo'
 import SeletorFoto from '../componentes/SeletorFoto'
 import cliente from '../api/cliente'
@@ -60,33 +60,17 @@ const SECOES = [
   },
 ]
 
-const ROTULOS_STATUS = {
-  pendente: { texto: 'Nova', variante: 'sucesso' },
-  visualizado: { texto: 'Visualizada', variante: 'acento' },
-  selecionado: { texto: 'Selecionado', variante: 'acento' },
-  aceito: { texto: 'Aceito', variante: 'sucesso' },
-  recusado: { texto: 'Recusado', variante: 'navy' },
-}
-
-function obterIniciais(nome) {
-  return nome
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((parte) => parte[0].toUpperCase())
-    .join('')
-}
+const ROTULOS_MODALIDADE = { presencial: 'Presencial', hibrido: 'Híbrido', remoto: 'Remoto' }
+const ROTULOS_CONTRATO = { clt: 'CLT', pj: 'PJ', estagio: 'Estágio', temporario: 'Temporário' }
 
 export default function PainelEmpresa() {
   const [perfil, setPerfil] = useState(null)
   const [vagas, setVagas] = useState([])
   const [candidaturas, setCandidaturas] = useState([])
-  const [interesses, setInteresses] = useState([])
   const [cota, setCota] = useState(null)
   const [erro, setErro] = useState('')
   const [parametros] = useSearchParams()
   const { recarregarUsuario } = useAuth()
-  const navegar = useNavigate()
 
   const secao = SECOES.find((item) => item.chave === parametros.get('secao'))
 
@@ -106,7 +90,6 @@ export default function PainelEmpresa() {
     // Números do painel: complementares, então falhas aqui não bloqueiam a tela.
     cliente.get('/empresas/me/vagas').then((resposta) => setVagas(resposta.data)).catch(() => {})
     cliente.get('/empresas/me/candidaturas').then((resposta) => setCandidaturas(resposta.data)).catch(() => {})
-    cliente.get('/empresas/me/interesses').then((resposta) => setInteresses(resposta.data)).catch(() => {})
     cliente.get('/empresas/me/cota').then((resposta) => setCota(resposta.data)).catch(() => {})
   }, [secao])
 
@@ -130,109 +113,8 @@ export default function PainelEmpresa() {
     return (
       <Layout tema="empresa" largura="largo">
         <CabecalhoPagina sobretitulo={secao.sobretitulo} titulo={secao.rotulo} descricao={secao.descricao} />
-        <section className="painel">
-          <secao.Componente />
-        </section>
-      </Layout>
-    )
-  }
-
-  const nomeEmpresa = perfil.razao_social || perfil.usuario.nome
-  const vagasAtivas = vagas.filter((vaga) => vaga.ativa).length
-  const candidaturasNovas = candidaturas.filter((c) => c.status === 'pendente').length
-
-  return (
-    <Layout tema="empresa" largura="largo">
-      {!perfil.aprovada && (
-        <p className="aviso aviso--erro">
-          Sua empresa ainda está aguardando aprovação do administrador. Algumas ações ficam bloqueadas até lá.
-        </p>
-      )}
-
-      <section className="boas-vindas">
-        <div>
-          <span className="sobretitulo">PAINEL DA EMPRESA</span>
-          <h1>Olá, {nomeEmpresa}!</h1>
-          <p>Encontre talentos únicos e acompanhe seus processos seletivos.</p>
-        </div>
-        <button type="button" className="acao-destaque" onClick={() => navegar('/empresa/vagas/nova')}>
-          <Briefcase size={20} /> Publicar nova vaga
-        </button>
-      </section>
-
-      <div className="grade-metricas">
-        <Metrica
-          icone={Briefcase}
-          valor={vagasAtivas}
-          rotulo="Vagas ativas"
-          detalhe={`${vagas.length} no total`}
-          aoClicar={() => navegar('/empresa?secao=vagas')}
-        />
-        <Metrica
-          icone={UserCheck}
-          valor={candidaturas.length}
-          rotulo="Candidaturas recebidas"
-          detalhe={`${candidaturasNovas} nova(s)`}
-          aoClicar={() => navegar('/empresa?secao=candidaturas')}
-        />
-        <Metrica
-          icone={Mail}
-          valor={interesses.length}
-          rotulo="Interesses enviados"
-          detalhe="Candidatos contatados"
-          aoClicar={() => navegar('/empresa?secao=interesses')}
-        />
-        <Metrica
-          icone={BarChart3}
-          valor={cota && cota.vagas_necessarias > 0 ? `${cota.percentual_cumprido}%` : '—'}
-          rotulo="Meta de inclusão"
-          detalhe={
-            cota && cota.vagas_necessarias > 0
-              ? `${cota.aceitos} de ${cota.vagas_necessarias} vagas da cota`
-              : 'Informe o nº de funcionários'
-          }
-          destaque
-          aoClicar={() => navegar('/empresa?secao=cota')}
-        />
-      </div>
-
-      <div className="grade-conteudo">
-        <section className="painel">
-          <header className="painel-titulo">
-            <div>
-              <h2>Candidaturas recentes</h2>
-              <p>Talentos que demonstraram interesse</p>
-            </div>
-            <button type="button" onClick={() => navegar('/empresa?secao=candidaturas')}>
-              Ver todas <ArrowRight size={16} />
-            </button>
-          </header>
-          {candidaturas.length === 0 && <p className="texto-suave">Nenhuma candidatura recebida ainda.</p>}
-          {candidaturas.slice(0, 4).map((candidatura) => (
-            <div className="linha-pessoa" key={candidatura.id}>
-              <span className="linha-pessoa__avatar">{obterIniciais(candidatura.candidato.usuario.nome)}</span>
-              <div>
-                <b>{candidatura.candidato.usuario.nome}</b>
-                <p>{candidatura.vaga ? candidatura.vaga.titulo : 'Candidatura direta'}</p>
-              </div>
-              <Selo variante={ROTULOS_STATUS[candidatura.status].variante}>
-                {ROTULOS_STATUS[candidatura.status].texto}
-              </Selo>
-              <button type="button" onClick={() => navegar(`/empresa/candidatos/${candidatura.candidato.id}`)}>
-                Ver perfil
-              </button>
-            </div>
-          ))}
-        </section>
-
-        <aside className="painel">
-          <header className="painel-titulo">
-            <div>
-              <h2>Sua empresa</h2>
-              <p>{perfil.aprovada ? 'Empresa aprovada' : 'Aguardando aprovação'}</p>
-            </div>
-          </header>
-          <div className="perfil-resumo">
+        {secao.chave === 'descricao' && (
+          <section className="painel foto-empresa">
             <SeletorFoto
               fotoUrl={perfil.usuario.foto_url}
               nome={perfil.usuario.nome}
@@ -242,22 +124,151 @@ export default function PainelEmpresa() {
               }}
               tamanho={72}
             />
-            <b>{nomeEmpresa}</b>
-            <p>
-              {perfil.setor || 'Setor não informado'}
-              {perfil.cidade ? ` · ${perfil.cidade}` : ''}
-            </p>
-          </div>
-          <div className="nota-cota">
-            <span>
-              <ShieldCheck size={20} />
-            </span>
             <div>
-              <b>Compromisso com inclusão</b>
-              <p>Acompanhe no relatório de cota quantas contratações PcD sua empresa já fez pela plataforma.</p>
+              <b>Logo ou foto da empresa</b>
+              <p>Aparece para os candidatos junto com o nome da empresa.</p>
             </div>
+          </section>
+        )}
+        <section className="painel">
+          <secao.Componente />
+        </section>
+      </Layout>
+    )
+  }
+
+  const nomeEmpresa = perfil.razao_social || perfil.usuario.nome
+  const vagasAtivas = vagas.filter((vaga) => vaga.ativa)
+  const novas = candidaturas.filter((c) => ['pendente', 'visualizado'].includes(c.status))
+  const candidaturasPorVaga = (vagaId) => candidaturas.filter((c) => c.vaga?.id === vagaId).length
+
+  let principal
+  let subtitulo = 'Encontre talentos únicos e acompanhe seus processos seletivos.'
+  if (novas.length > 0) {
+    const primeira = novas[0]
+    subtitulo = 'Você tem candidaturas esperando resposta.'
+    principal = (
+      <Destaque
+        tom="acento"
+        visual={<IconeDestaque icone={UserCheck} />}
+        sobretitulo="NOVIDADE PARA VOCÊ"
+        titulo={`${primeira.candidato.usuario.nome} se candidatou`}
+        texto={
+          [
+            primeira.vaga ? `Vaga: ${primeira.vaga.titulo}` : 'Candidatura direta',
+            novas.length > 1 && `mais ${novas.length - 1} candidatura(s) nova(s) esperando resposta`,
+          ]
+            .filter(Boolean)
+            .join(' · ')
+        }
+        acao={{ rotulo: 'Ver candidatura', para: '/empresa?secao=candidaturas' }}
+      />
+    )
+  } else if (vagasAtivas.length === 0) {
+    principal = (
+      <Destaque
+        visual={<IconeDestaque icone={Briefcase} />}
+        sobretitulo="SEU PRÓXIMO PASSO"
+        titulo="Publique uma vaga"
+        texto="Com uma vaga aberta, candidatos podem enviar o currículo direto para você."
+        acao={{ rotulo: 'Publicar vaga', para: '/empresa/vagas/nova' }}
+      />
+    )
+  } else {
+    principal = (
+      <Destaque
+        visual={<IconeDestaque icone={Search} />}
+        sobretitulo="SEU PRÓXIMO PASSO"
+        titulo="Encontre novos talentos"
+        texto="Busque candidatos pelo perfil, cidade e habilidades e demonstre interesse."
+        acao={{ rotulo: 'Buscar candidatos', para: '/empresa?secao=buscar' }}
+      />
+    )
+  }
+
+  const temCota = cota && cota.vagas_necessarias > 0
+  const faltamCota = temCota ? Math.max(0, cota.vagas_necessarias - cota.aceitos) : 0
+
+  return (
+    <Layout tema="empresa" largura="inicio">
+      <div className="inicio">
+        {!perfil.aprovada && (
+          <p className="aviso aviso--erro">
+            Sua empresa ainda está aguardando aprovação do administrador. Algumas ações ficam bloqueadas até lá.
+          </p>
+        )}
+
+        <header className="saudacao">
+          <span>PAINEL DA EMPRESA</span>
+          <h1>Olá, {nomeEmpresa}!</h1>
+          <p>{subtitulo}</p>
+        </header>
+
+        {principal}
+
+        <Atalho
+          para="/empresa?secao=cota"
+          visual={
+            <span className="atalho__icone">
+              <BarChart3 size={20} />
+            </span>
+          }
+          titulo={
+            temCota
+              ? `Lei de Cotas: ${cota.aceitos} de ${cota.vagas_necessarias} contratações PcD`
+              : 'Lei de Cotas'
+          }
+          texto={
+            temCota
+              ? faltamCota > 0
+                ? `Faltam ${faltamCota} contratação(ões) para cumprir a cota (empresa com ${cota.total_funcionarios} funcionários).`
+                : 'Sua empresa cumpre a cota legal. Parabéns!'
+              : 'Informe o número de funcionários para calcular sua cota.'
+          }
+        >
+          {temCota && (
+            <div className="atalho__barra">
+              <div style={{ width: `${Math.min(100, cota.percentual_cumprido)}%` }} />
+            </div>
+          )}
+        </Atalho>
+
+        <section className="painel lista-inicio">
+          <header>
+            <h2>Suas vagas abertas</h2>
+            <Link to="/empresa?secao=vagas">Ver todas →</Link>
+          </header>
+          {vagasAtivas.length === 0 && <p className="texto-suave">Nenhuma vaga aberta no momento.</p>}
+          {vagasAtivas.slice(0, 4).map((vaga) => {
+            const total = candidaturasPorVaga(vaga.id)
+            return (
+              <div className="linha-pessoa" key={vaga.id}>
+                <span className="linha-pessoa__avatar">
+                  <Briefcase size={19} />
+                </span>
+                <div>
+                  <b>{vaga.titulo}</b>
+                  <p>
+                    {[ROTULOS_MODALIDADE[vaga.modalidade], vaga.cidade, ROTULOS_CONTRATO[vaga.tipo_contrato]]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </p>
+                </div>
+                <Selo variante={total > 0 ? 'sucesso' : 'navy'}>
+                  {total === 0 ? 'Nenhuma ainda' : total === 1 ? '1 candidatura' : `${total} candidaturas`}
+                </Selo>
+                <Link to="/empresa?secao=candidaturas" className="botao botao--contorno">
+                  Ver candidatos
+                </Link>
+              </div>
+            )
+          })}
+          <div className="lista-inicio__rodape">
+            <Link to="/empresa/vagas/nova" className="botao botao--primario">
+              <Plus size={16} /> Publicar nova vaga
+            </Link>
           </div>
-        </aside>
+        </section>
       </div>
     </Layout>
   )

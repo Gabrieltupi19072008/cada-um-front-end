@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   BarChart3,
@@ -20,32 +20,51 @@ import {
   X,
 } from 'lucide-react'
 import Logo from './Logo'
+import cliente from '../api/cliente'
 import { useAuth } from '../contexto/AuthContext'
 
 const ROTULOS_PERFIL = { candidato: 'Candidato', empresa: 'Empresa', admin: 'Admin' }
 const ICONES_PERFIL = { candidato: User, empresa: Building2, admin: ShieldCheck }
 
 // `ativoEm` lista prefixos de rota extras que também acendem o item no menu.
+// `contador` indica qual número de novidades aparece como badge no item.
 const MENUS = {
   candidato: [
-    { rotulo: 'Visão geral', icone: Home, para: '/candidato' },
-    { rotulo: 'Orientação', icone: GraduationCap, para: '/candidato/orientacao' },
+    { rotulo: 'Início', icone: Home, para: '/candidato' },
     { rotulo: 'Meu currículo', icone: FileText, para: '/candidato/curriculo' },
-    { rotulo: 'Vagas disponíveis', icone: Briefcase, para: '/candidato/vagas', ativoEm: ['/candidato/empresas'] },
+    { rotulo: 'Vagas', icone: Briefcase, para: '/candidato/vagas', ativoEm: ['/candidato/empresas'] },
     { rotulo: 'Candidaturas', icone: Send, para: '/candidato/candidaturas' },
-    { rotulo: 'Empresas interessadas', icone: Heart, para: '/candidato/interesses' },
+    { rotulo: 'Empresas interessadas', icone: Heart, para: '/candidato/interesses', contador: true },
+    { rotulo: 'Orientação', icone: GraduationCap, para: '/candidato/orientacao' },
     { rotulo: 'Privacidade', icone: Lock, para: '/candidato/privacidade' },
   ],
   empresa: [
-    { rotulo: 'Visão geral', icone: Home, para: '/empresa' },
+    { rotulo: 'Início', icone: Home, para: '/empresa' },
     { rotulo: 'Sobre a empresa', icone: Building2, para: '/empresa?secao=descricao' },
     { rotulo: 'Buscar candidatos', icone: Search, para: '/empresa?secao=buscar', ativoEm: ['/empresa/candidatos'] },
     { rotulo: 'Minhas vagas', icone: Briefcase, para: '/empresa?secao=vagas', ativoEm: ['/empresa/vagas'] },
     { rotulo: 'Interesses enviados', icone: Mail, para: '/empresa?secao=interesses' },
-    { rotulo: 'Candidaturas', icone: UserCheck, para: '/empresa?secao=candidaturas' },
+    { rotulo: 'Candidaturas', icone: UserCheck, para: '/empresa?secao=candidaturas', contador: true },
     { rotulo: 'Relatório de cota', icone: BarChart3, para: '/empresa?secao=cota' },
   ],
-  admin: [{ rotulo: 'Visão geral', icone: Home, para: '/admin' }],
+  admin: [
+    { rotulo: 'Início', icone: Home, para: '/admin' },
+    { rotulo: 'Aprovações', icone: ShieldCheck, para: '/admin?secao=aprovacoes', contador: true },
+    { rotulo: 'Cota por empresa', icone: BarChart3, para: '/admin?secao=cota' },
+  ],
+}
+
+// Quantas coisas esperam resposta da pessoa (vira o número vermelho no menu).
+const BUSCAR_CONTADOR = {
+  candidato: () =>
+    cliente
+      .get('/candidatos/me/interesses')
+      .then((r) => r.data.filter((i) => ['pendente', 'visualizado'].includes(i.status)).length),
+  empresa: () =>
+    cliente
+      .get('/empresas/me/candidaturas')
+      .then((r) => r.data.filter((c) => ['pendente', 'visualizado'].includes(c.status)).length),
+  admin: () => cliente.get('/admin/estatisticas').then((r) => r.data.aprovacoes_pendentes),
 }
 
 function itemEstaAtivo(item, localizacao) {
@@ -70,6 +89,17 @@ export default function Layout({ largura = 'padrao', tema, children }) {
   const perfilAtual = MENUS[perfil] ? perfil : 'candidato'
   const temaAtual = tema || (perfilAtual === 'candidato' ? null : perfilAtual)
   const IconePerfil = ICONES_PERFIL[perfilAtual]
+  const [contador, setContador] = useState(0)
+
+  useEffect(() => {
+    let ativo = true
+    BUSCAR_CONTADOR[perfilAtual]()
+      .then((valor) => ativo && setContador(valor))
+      .catch(() => {})
+    return () => {
+      ativo = false
+    }
+  }, [perfilAtual, localizacao.pathname, localizacao.search])
 
   return (
     <div className={`app-shell ${temaAtual ? `tema-${temaAtual}` : ''}`}>
@@ -104,6 +134,11 @@ export default function Layout({ largura = 'padrao', tema, children }) {
             >
               <item.icone size={19} />
               {item.rotulo}
+              {item.contador && contador > 0 && (
+                <i className="contador-menu" aria-label={`${contador} para responder`}>
+                  {contador}
+                </i>
+              )}
             </Link>
           ))}
         </nav>
